@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings",
+  "_comment_": "Hooks for the SMB Acquisition Intelligence Platform. See obsidian-vault/00-Claude-Control/OPERATING-RULES.md for the contract.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ./.claude/scripts/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ./.claude/scripts/pre-write-guard.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ./.claude/scripts/post-write-validate.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ./.claude/scripts/subagent-stop-sync.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "_comment_": "Local-session defaults. The online sandbox runs without --dangerously-skip-permissions; the human's local cc alias enables it.",
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push upstream:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn-ui:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(find obsidian-vault:*)",
+      "Bash(find apps:*)",
+      "Bash(sha256sum:*)",
+      "Bash(curl -s:*)"
+    ]
+  }
+}

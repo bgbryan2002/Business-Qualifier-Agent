@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Builds
+.next/
+out/
+build/
+dist/
+
+# Env / secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local Claude / hook scratch (the configured ones live under .claude/, which IS committed)
+.claude-scratch/
+*.tmp
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Obsidian local cache (the vault content IS committed; only Obsidian's per-machine workspace state is excluded)
+obsidian-vault/.obsidian/workspace*
+obsidian-vault/.obsidian/cache
+obsidian-vault/.trash/
