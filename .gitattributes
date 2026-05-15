@@ -1,0 +1,6 @@
+# Normalize line endings cross-platform.
+# Default: any text file is stored LF in the repo; checkout converts per-platform.
+* text=auto eol=lf
+
+# PowerShell scripts require CRLF on Windows to execute reliably.
+*.ps1 text eol=crlf

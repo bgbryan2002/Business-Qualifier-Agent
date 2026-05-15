@@ -36,6 +36,9 @@ Thumbs.db
 .claude-scratch/
 *.tmp
 
+# Playwright MCP plugin per-session snapshots + console logs
+.playwright-mcp/
+
 # Test / coverage
 coverage/
 .nyc_output/
