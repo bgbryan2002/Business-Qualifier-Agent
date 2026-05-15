@@ -48,3 +48,64 @@ Narrative log of the orchestrator's run, one entry per phase boundary or signifi
 Reach `[GATE 0]`. Push everything. Wait for human reply: `proceed` | `local` | `obsidian`.
 
 ---
+
+## 2026-05-14 — Phase 1 — Buyer Profile
+
+**Outcome**
+- Buyer 001 emitted to `obsidian-vault/02-Buyers/profiles/buyer-001.{json,md}` plus interview transcript in `02-Buyers/interviews/`
+- Specifics fabricated under explicit human authorization; real constraints honored (recent grad, Big 4 6mo, lives at home, new car loan, loan-leveraged acquisition strategy)
+- 5 consistency flags surfaced (not blocking): `industry_skill_gap` and `thin_w2_history` are the load-bearing ones
+- Commit `4b18ac9` pushed to upstream and origin
+
+**Operational notes**
+- `buyer-profiler` subagent hit a 529 (~5.7 min) and produced zero files; orchestrator wrote the artifacts directly per the same rubric in `.claude/agents/buyer-profiler.md`
+- Local stop-hook (`~/.claude/stop-hook-git-check.sh`) warned about origin being behind upstream; fixed by updating `subagent-stop-sync.sh` to push to all configured remotes (commit `33a1821`)
+
+**Next action**
+Phase 2 (Skill discovery + UI tooling).
+
+---
+
+## 2026-05-14 — Phase 2 — Skill Discovery + Tier 2 Documentation
+
+**Outcome**
+- 26 skill candidates discovered across 5 categories via 5 parallel `repo-discovery` agents
+- 0 rejected. 17 clean accepts, 9 accept-with-flags (5 GPL copyleft-no-vendoring + 1 GreenSock non-SPDX + 3 confidence flags)
+- All 26 skill notes written to `obsidian-vault/01-Skills/<category>/<slug>.md` with full frontmatter
+- 4 Tier-2 reference docs documented for local install: `ui-ux-pro-max`, `web-accessibility`, `web-design-guidelines`, `emil-kowalski-motion`
+- VAULT-INDEX note counts refreshed (01-Skills: 36)
+- Commit `7c43b99` pushed to both remotes
+
+**Operational notes**
+- 5 discovery agents ran in parallel (54s, 110s, 110s, 136s, 220s); zero 529s this round
+- `repo-validator` work completed directly by orchestrator (faster than another agent spawn given discovery already captured licenses)
+- Underwriting category is genuinely thin — purpose-built OSS for SMB acquisition underwriting essentially doesn't exist; the viable candidates are foundational financial-math primitives the platform composes itself
+
+**Phase-2-related sandbox constraints**
+- Tier 2 skills could not be installed (no `npx skills add` in sandbox); install instructions live in `USER-SETUP.md` for local
+- The same applies to Tier 1 plugins (they were documented in Phase 0 but never actually installed by this session)
+
+**Next action**
+Hand off to local. Phase 3 resumes there.
+
+---
+
+## 2026-05-14 — Hand-off marker
+
+**Decision**
+User chose to resume locally before Phase 3. Rationale: Phase 3+ depends increasingly on tools that only exist in the local Claude Code CLI — `playwright` for JS-heavy diligence pages, `frontend-design` / `UI-UX-Pro-Max` plugins for portfolio aesthetics, a real browser to preview Phase 4 + 5 UIs.
+
+**Deliverables for hand-off**
+- `HANDOFF.md` at repo root (full resume guide)
+- `RUN-LOG.md` updated with Phase 1 + 2 narrative + this marker
+- Both remotes (upstream + origin) at HEAD
+- Latest commit will be the hand-off commit itself
+
+**Resume in 5 minutes** — see `HANDOFF.md` TL;DR.
+
+**Critical first actions on the user's machine, before any new orchestrator work**
+1. Rotate the PAT (pasted in chat = small credential leak)
+2. Install Tier 1 plugins (superpowers, frontend-design, context7, playwright, claude-mem)
+3. Then `cc` in the repo root and tell the orchestrator: "Resume Phase 3."
+
+---
