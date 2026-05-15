@@ -59,21 +59,56 @@ if [ -f "$CHANGELOG" ]; then
   fi
 fi
 
-# --- Push to upstream with exponential backoff (only retries on transient errors) ---
-RETRIES=0
+# --- Push to every configured remote, with exponential backoff per remote ---
+# Priority: upstream first (the canonical save), then origin (proxy / mirror).
+# This keeps both bgbryan2002/Business-Qualifier-Agent and any sandbox/mirror remote in sync,
+# which silences stop-hooks that only check origin.
 MAX_RETRIES=4
 SLEEPS=(2 4 8 16)
-while true; do
-  if git push -u upstream "$BRANCH" 2>&1 | sed -E 's|https://oauth2:[^@]+@|https://REDACTED@|g'; then
-    break
+PUSHED_TO=()
+FAILED=()
+
+push_to_remote() {
+  local REMOTE="$1"
+  local R=0
+  while true; do
+    if git push -u "$REMOTE" "$BRANCH" 2>&1 | sed -E 's|https://oauth2:[^@]+@|https://REDACTED@|g'; then
+      PUSHED_TO+=("$REMOTE")
+      return 0
+    fi
+    if [ $R -ge $MAX_RETRIES ]; then
+      FAILED+=("$REMOTE")
+      return 1
+    fi
+    sleep "${SLEEPS[$R]}"
+    R=$((R+1))
+  done
+}
+
+# Build remote list in deterministic order: upstream, origin, then any others.
+REMOTES=()
+for r in upstream origin; do
+  if git remote get-url "$r" >/dev/null 2>&1; then
+    REMOTES+=("$r")
   fi
-  if [ $RETRIES -ge $MAX_RETRIES ]; then
-    echo "[subagent-stop-sync] git push failed after $MAX_RETRIES retries; STOP" >&2
-    exit 1
-  fi
-  sleep "${SLEEPS[$RETRIES]}"
-  RETRIES=$((RETRIES+1))
+done
+for r in $(git remote); do
+  case " ${REMOTES[*]} " in *" $r "*) : ;; *) REMOTES+=("$r") ;; esac
 done
 
-echo "[subagent-stop-sync] pushed $SHA to upstream/$BRANCH"
+if [ "${#REMOTES[@]}" -eq 0 ]; then
+  echo "[subagent-stop-sync] no remotes configured; cannot push" >&2
+  exit 1
+fi
+
+for r in "${REMOTES[@]}"; do
+  push_to_remote "$r" || true
+done
+
+if [ "${#PUSHED_TO[@]}" -eq 0 ]; then
+  echo "[subagent-stop-sync] all pushes failed: ${FAILED[*]}" >&2
+  exit 1
+fi
+
+echo "[subagent-stop-sync] pushed $SHA to: ${PUSHED_TO[*]}${FAILED:+ (failed: ${FAILED[*]})}"
 exit 0
