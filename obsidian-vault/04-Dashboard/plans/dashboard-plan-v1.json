@@ -1,0 +1,318 @@
+{
+  "id": "DashboardPlan",
+  "version": "v1",
+  "as_of_date": "2026-05-15",
+  "target_app": "apps/dashboard/",
+  "stack": {
+    "framework": "Next.js (App Router) + TypeScript",
+    "styling": "Tailwind CSS",
+    "primitives": "shadcn/ui",
+    "charts": "Recharts",
+    "motion": "Motion (formerly Framer Motion) — layout + page transitions only",
+    "forbidden": ["GSAP", "Spline", "@react-three/fiber", "Lottie", "Rive"]
+  },
+
+  "routes": [
+    {
+      "path": "/",
+      "purpose": "Operator home — at-a-glance state of the world: how many buyers, how many deals, what's flagged.",
+      "primary_data": [
+        "BuyerProfile[] (read from obsidian-vault/02-Buyers/profiles/*.json)",
+        "DealAssessment[] (read from obsidian-vault/03-Deals/scored/draft/*.md frontmatter)",
+        "ListingPacket[] (read from obsidian-vault/03-Deals/listings/draft/*.md frontmatter)",
+        "Memo count (read from obsidian-vault/03-Deals/memos/draft/*.md, excluding status: rejected|retracted)"
+      ],
+      "components_used": ["StatBlock", "BuyerCard", "DealRibbon", "HardGateSummaryChart", "EmptyState", "RecentActivityFeed", "GlobalNav"],
+      "loading_strategy": "server — read filesystem via async server component; revalidate on each request (no cache); pass plain JSON to client components",
+      "empty_state_design": "If 0 buyers → CTA card 'Run buyer-profiler'. If 0 deals → CTA card 'Run Phase 3 discovery with search rubric'. If all deals are rejected/retracted (current state) → muted 'No actionable candidates today' card with a breakdown of why (rejection reasons grouped), plus link to RUN-LOG entry. Never show 0 charts; show the skeleton with a 'No data yet' overlay instead."
+    },
+    {
+      "path": "/buyers/[id]",
+      "purpose": "Single buyer profile — capital, operator, geography, industry preferences, deal constraints. Read-only view (editing buyer profile is a subagent job, not a UI job).",
+      "primary_data": ["BuyerProfile (single JSON)"],
+      "components_used": ["BuyerHeader", "CapitalStackPanel", "OperatorPanel", "GeographyPanel", "IndustryPreferencesPanel", "DealConstraintsPanel", "ScoringWeightsPanel", "DealsForBuyerTable"],
+      "loading_strategy": "server — single JSON read; static-ish (cache: force-cache with tag, revalidated on subagent commit hook later)",
+      "empty_state_design": "If buyer file missing → 404 page with 'Buyer not yet profiled — see Phase 1' message + link back to /. If scoring_weights_override is empty → render with 'using default weights' badge, no error."
+    },
+    {
+      "path": "/deals",
+      "purpose": "All deals — filterable + sortable table. The buyer's daily working surface.",
+      "primary_data": [
+        "Join of ListingPacket × DealAssessment × DueDiligencePacket on listing_id",
+        "Includes rejected + retracted (with a default filter that hides them)"
+      ],
+      "components_used": ["DealsTable", "DealsFilterBar", "ScoreBadge", "HardGateBadge", "StatusBadge", "ConfidenceMeter", "EmptyState", "DealsDistributionChart"],
+      "loading_strategy": "server (initial table data) + client (sort/filter state via URL search params). Sorting is client-side; data set is small (< 100 rows for foreseeable future).",
+      "empty_state_design": "If 0 ListingPackets → 'No listings ingested yet — paste URLs into inputs/listings.json and run Phase 3' empty card with copy-paste snippet. If all listings are rejected/retracted (current state with 8 listings, 0 actionable) → table still renders all 8 rows but with a banner: '8 listings ingested; 0 currently actionable. Toggle Show rejected to review the discard reasons.' Toggle defaults ON when actionable count is zero so the user sees something."
+    },
+    {
+      "path": "/deals/[id]",
+      "purpose": "Single deal — listing fields, diligence claims, scored assessment, and memo (if any) on one page. The 'do I send the NDA?' surface.",
+      "primary_data": [
+        "ListingPacket (single)",
+        "DueDiligencePacket (single)",
+        "DealAssessment (single)",
+        "Memo markdown body (single, optional)",
+        "EntityAdvisory (optional, if legal-entity-analyst has run)"
+      ],
+      "components_used": ["DealHeader", "ListingFactsPanel", "DiligenceClaimsList", "ScoreBreakdownChart", "HardGatePanel", "RedFlagsList", "FollowUpActionsList", "MemoPanel", "EntityAdvisoryPanel", "BrokerPatternFlag", "RetractionNotice"],
+      "loading_strategy": "server — four file reads in parallel; suspense boundary per panel so a missing diligence packet doesn't block the listing facts panel",
+      "empty_state_design": "If DealAssessment missing → 'Not yet scored' banner. If DueDiligencePacket missing → 'Diligence pending' empty panel with a 'Why?' tooltip. If status: rejected → top-of-page retraction notice with reason + retrieved_at. If broker-pattern flag is set (asking/SDE < 1.5×) → red top banner 'Broker-pattern flag — confirm asking-price field with broker before any NDA' citing search-rubric §Broker patterns."
+    },
+    {
+      "path": "/skills",
+      "purpose": "Validated skills directory — read-only browser of obsidian-vault/01-Skills/ by category. Lets the buyer (or a future collaborator) see what tools the platform has under the hood.",
+      "primary_data": ["Skill notes (36 today) grouped by category: accounting | legal | underwriting | ui | animation | research | automation"],
+      "components_used": ["SkillsCategoryNav", "SkillCard", "LicenseBadge", "ConfidenceMeter", "SearchInput", "EmptyState"],
+      "loading_strategy": "server — read all 01-Skills/**/*.md frontmatter at request time; no client fetching",
+      "empty_state_design": "If a category has 0 skills → show the category header with a 'No skills in this category yet' note (not hidden — visible absence is signal)."
+    },
+    {
+      "path": "/memos/[id]",
+      "purpose": "Single memo, printable and shareable. The buyer's 'send this to my advisor' surface.",
+      "primary_data": ["Memo markdown body + frontmatter", "Parent DealAssessment (linked, summarized at top)", "Parent ListingPacket (linked, summarized at top)"],
+      "components_used": ["MemoHeader", "MemoBody", "MemoMetaSidebar", "PrintButton", "RetractionNotice"],
+      "loading_strategy": "server — render markdown to HTML at request time (mdx or remark). Print-optimized CSS via @media print.",
+      "empty_state_design": "If memo not found → 404. If memo status: retracted → top-of-document retraction banner with the retraction date + reason, body still readable below for audit."
+    }
+  ],
+
+  "components": [
+    {
+      "name": "GlobalNav",
+      "purpose": "Top-of-page navigation, present on every route. Houses the /portfolio link-out.",
+      "shadcn_primitives_used": ["NavigationMenu", "Separator", "Button"],
+      "props_shape": "{ currentPath: string }",
+      "accessibility_notes": "Skip-to-main-content link as first focusable element. Active route marked with aria-current=page. /portfolio link uses rel=noopener and an external-link icon with aria-label='Portfolio app (opens in new tab)'.",
+      "motion_notes": "No motion. Persistent shell."
+    },
+    {
+      "name": "StatBlock",
+      "purpose": "Single big number with label and optional trend delta. Used 3-6× on /.",
+      "shadcn_primitives_used": ["Card"],
+      "props_shape": "{ label: string; value: number|string; sublabel?: string; trend?: { delta: number; direction: 'up'|'down'|'flat' }; tone?: 'neutral'|'warn'|'positive' }",
+      "accessibility_notes": "Numbers wrapped in <span aria-label> with full prose ('eight listings, three rejected'). Trend direction conveyed by icon + text, not color alone.",
+      "motion_notes": "On mount: opacity 0→1, 120ms ease-out. No count-up animation (count-up is showcase territory)."
+    },
+    {
+      "name": "BuyerCard",
+      "purpose": "Compact summary of a BuyerProfile — name/id, capital headline, geography, top constraints. Links to /buyers/[id].",
+      "shadcn_primitives_used": ["Card", "Badge", "Avatar"],
+      "props_shape": "{ buyer: BuyerProfile; dealCount: number; memoCount: number }",
+      "accessibility_notes": "Card is a single link (whole-card click target ≥ 44×44 px). Card semantics: <article> with aria-labelledby pointing at the buyer name h3.",
+      "motion_notes": "Hover: subtle border-color shift, 80ms. No translate or scale (no novelty motion in core data view)."
+    },
+    {
+      "name": "DealRibbon",
+      "purpose": "Horizontal scrolling list of the top 5 active deals on /. Each item is a mini ScoreBadge + listing summary.",
+      "shadcn_primitives_used": ["ScrollArea", "Card"],
+      "props_shape": "{ deals: Array<{ listingId: string; businessName: string; score: number; confidence: number; status: string }>; emptyMessage?: string }",
+      "accessibility_notes": "Horizontal list is a <ul role=list>. Keyboard: arrow keys move focus between items. Tab moves focus out of the ribbon to the next region.",
+      "motion_notes": "Spring-physics on layout reorder when filter changes (Motion's <Reorder> primitive); duration ≤ 200ms."
+    },
+    {
+      "name": "DealsTable",
+      "purpose": "The primary data surface for /deals. Sortable, filterable, paginated (client-side). High information density.",
+      "shadcn_primitives_used": ["Table", "Badge", "Button", "Checkbox", "DropdownMenu"],
+      "props_shape": "{ rows: DealRow[]; initialSort?: { column: string; direction: 'asc'|'desc' }; initialFilters?: Record<string,unknown> }",
+      "accessibility_notes": "Real <table> markup with <thead>/<tbody>; sortable column headers are <button> children with aria-sort. Row-level checkboxes have aria-label tied to the listing's business name. Filter changes announce via aria-live=polite region 'showing N of M deals.'",
+      "motion_notes": "Row reorder on sort: Motion layout animation, spring stiffness ~300, damping ~30, capped at 220ms. Disabled when prefers-reduced-motion: reduce."
+    },
+    {
+      "name": "DealsFilterBar",
+      "purpose": "Filter chips for /deals: status, hard-gate result, score range, confidence range, industry, geography, broker.",
+      "shadcn_primitives_used": ["Input", "Select", "Slider", "Toggle", "Badge", "Popover"],
+      "props_shape": "{ filters: FilterState; onChange: (next: FilterState) => void; activeCount: number; totalCount: number }",
+      "accessibility_notes": "Each filter labelled with <label htmlFor>. Slider has aria-valuemin/max/now and a text-input shadow for keyboard precision. Clear-all button always present when activeCount > 0.",
+      "motion_notes": "Chip remove: opacity 1→0 + width collapse, 150ms ease-out."
+    },
+    {
+      "name": "ScoreBadge",
+      "purpose": "Numeric deal score (0–100) with tone band (red <40, amber 40-59, green 60-79, emerald 80+).",
+      "shadcn_primitives_used": ["Badge"],
+      "props_shape": "{ score: number; size?: 'sm'|'md'|'lg' }",
+      "accessibility_notes": "Tone bands echoed in text ('score 58, amber band') for screen readers and color-blind users. Color is supportive, not load-bearing.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "HardGateBadge",
+      "purpose": "Pass/fail/unknown indicator for the three hard gates (target_owner_profit, financing_feasibility, license_transferability).",
+      "shadcn_primitives_used": ["Badge", "Tooltip"],
+      "props_shape": "{ gate: 'target_owner_profit'|'financing_feasibility'|'license_transferability'; result: 'pass'|'fail'|'unknown' }",
+      "accessibility_notes": "Icon + abbreviation + tooltip with full gate description. Fail = solid red fill + ✗ icon + 'FAIL' text; pass = outlined green + ✓ icon + 'PASS'. Triple-encoded (color + icon + text).",
+      "motion_notes": "None."
+    },
+    {
+      "name": "StatusBadge",
+      "purpose": "Listing/deal status: accepted | accepted-with-flags | rejected | speculative | retracted.",
+      "shadcn_primitives_used": ["Badge"],
+      "props_shape": "{ status: string; reason?: string }",
+      "accessibility_notes": "Status text is always visible (not icon-only). Reason exposed via Tooltip + aria-describedby.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "ConfidenceMeter",
+      "purpose": "0.00–1.00 confidence value rendered as a 4-segment meter (0–0.25, 0.25–0.5, 0.5–0.75, 0.75–1.0).",
+      "shadcn_primitives_used": ["Progress"],
+      "props_shape": "{ value: number; size?: 'sm'|'md' }",
+      "accessibility_notes": "role=meter with aria-valuemin=0, aria-valuemax=1, aria-valuenow, aria-valuetext='confidence 0.55 (low-medium)'.",
+      "motion_notes": "On value change: width transition 180ms ease-out."
+    },
+    {
+      "name": "HardGateSummaryChart",
+      "purpose": "Recharts stacked bar — pass/fail/unknown counts across the three hard gates. Lives on /.",
+      "shadcn_primitives_used": ["Card"],
+      "props_shape": "{ assessments: DealAssessment[] }",
+      "accessibility_notes": "Recharts SVG wrapped in <figure> with <figcaption>. role=img + aria-label summarizing the chart in prose. A visually-hidden <table> below the chart provides the same data for screen readers (accessibility pattern documented in plan §Accessibility).",
+      "motion_notes": "Recharts default animation disabled (isAnimationActive=false) to honor prefers-reduced-motion globally and to avoid noisy re-paints."
+    },
+    {
+      "name": "DealsDistributionChart",
+      "purpose": "Recharts histogram of deal scores. Lives on /deals.",
+      "shadcn_primitives_used": ["Card"],
+      "props_shape": "{ assessments: DealAssessment[]; binSize?: number }",
+      "accessibility_notes": "Same pattern as HardGateSummaryChart — figure + figcaption + hidden data table.",
+      "motion_notes": "isAnimationActive=false."
+    },
+    {
+      "name": "ScoreBreakdownChart",
+      "purpose": "Recharts horizontal bar — six subscores (cash_flow_fit, operator_fit, geography_fit, industry_fit, deal_structure_fit, diligence_risk). Lives on /deals/[id].",
+      "shadcn_primitives_used": ["Card"],
+      "props_shape": "{ subscores: DealAssessment['subscores'] }",
+      "accessibility_notes": "Same figure+caption+hidden-table pattern. Each bar's tooltip is keyboard-reachable (focusable rect).",
+      "motion_notes": "isAnimationActive=false."
+    },
+    {
+      "name": "DiligenceClaimsList",
+      "purpose": "Grouped list of DueDiligencePacket.claims by category (registry, court, reviews, news, licensing, operator-track-record, competitive-density, regulatory, owned-web-presence).",
+      "shadcn_primitives_used": ["Accordion", "Badge"],
+      "props_shape": "{ claims: DueDiligencePacket['claims']; defaultOpen?: string[] }",
+      "accessibility_notes": "Accordion uses shadcn's Radix-backed primitive — keyboard nav and ARIA already correct. Each claim's source_url opens in new tab with aria-label including the domain.",
+      "motion_notes": "Accordion expand: 180ms height transition, disabled under prefers-reduced-motion."
+    },
+    {
+      "name": "RedFlagsList",
+      "purpose": "Bullet list of DueDiligencePacket.red_flags, visually prominent.",
+      "shadcn_primitives_used": ["Alert"],
+      "props_shape": "{ flags: string[] }",
+      "accessibility_notes": "role=region with aria-labelledby='red-flags-heading'. Empty state: 'No red flags surfaced (yet)' — empty is signal, do not hide.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "FollowUpActionsList",
+      "purpose": "Checklist of DueDiligencePacket.follow_up_actions.",
+      "shadcn_primitives_used": ["Checkbox", "Label"],
+      "props_shape": "{ actions: string[] }",
+      "accessibility_notes": "Checkboxes are advisory (state is not persisted in v1) — labelled clearly with 'planned action, not tracked' helper text so users don't assume the checkmark saves.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "MemoPanel",
+      "purpose": "Inline preview of a memo body on /deals/[id], with a 'Open in full' link to /memos/[id].",
+      "shadcn_primitives_used": ["Card", "Button"],
+      "props_shape": "{ memoMarkdown: string; memoId: string; status: string }",
+      "accessibility_notes": "Memo body rendered with semantic markdown — h2/h3/p/ul, not div soup. Headings start at h3 (the card itself is h2).",
+      "motion_notes": "None."
+    },
+    {
+      "name": "EntityAdvisoryPanel",
+      "purpose": "If an EntityAdvisory packet exists for this deal, render the options_considered list with a clear 'human sign-off required' callout.",
+      "shadcn_primitives_used": ["Card", "Alert", "Badge"],
+      "props_shape": "{ advisory: EntityAdvisory }",
+      "accessibility_notes": "Sign-off callout uses Alert with role=note + variant='warning' (high-contrast). Says 'Workflow-opinionated, not legally final — see signoff_checklist_path' verbatim.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "BrokerPatternFlag",
+      "purpose": "Top-of-page warning banner when a deal is associated with a broker pattern (e.g., Donald Webster / sub-1.5× SDE). Cites search-rubric-buyer-001.md §Broker patterns.",
+      "shadcn_primitives_used": ["Alert"],
+      "props_shape": "{ broker: string; pattern: 'sub-1.5x-sde'|'multi-listing-anomaly'|'other'; citationPath: string }",
+      "accessibility_notes": "role=alert is too aggressive (it interrupts SR users); use role=region + aria-label='Broker pattern warning'. High contrast, icon + text.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "RetractionNotice",
+      "purpose": "Banner shown when a listing/assessment/memo has been retracted. Renders reason + retrieved_at + link to the RUN-LOG entry.",
+      "shadcn_primitives_used": ["Alert"],
+      "props_shape": "{ retractedAt: string; reason: string; runLogAnchor?: string }",
+      "accessibility_notes": "Visible top-of-document. Strikethrough on heading is decorative only; the word 'RETRACTED' appears in the banner.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "EmptyState",
+      "purpose": "Reusable empty-state card with title, body, optional CTA. Used on every list view.",
+      "shadcn_primitives_used": ["Card", "Button"],
+      "props_shape": "{ title: string; body: string; cta?: { label: string; href: string }; tone?: 'neutral'|'positive'|'warn' }",
+      "accessibility_notes": "Empty states are <section aria-labelledby> with a real heading, not a passive 'no data' div. Tone never relies on color alone.",
+      "motion_notes": "Mount fade-in 120ms."
+    },
+    {
+      "name": "RecentActivityFeed",
+      "purpose": "Last 5 entries from RUN-LOG.md parsed as a feed: date + phase + headline. Lives on /.",
+      "shadcn_primitives_used": ["Card", "Separator"],
+      "props_shape": "{ entries: Array<{ date: string; phase: string; headline: string; anchor: string }> }",
+      "accessibility_notes": "role=feed with aria-busy during refresh. Each article has aria-posinset/aria-setsize.",
+      "motion_notes": "None."
+    },
+    {
+      "name": "SkillCard",
+      "purpose": "Skill note tile for /skills. Title, category, license badge, confidence meter, source URL.",
+      "shadcn_primitives_used": ["Card", "Badge"],
+      "props_shape": "{ skill: { id: string; title: string; category: string; license: string; confidence: number; source_url: string; status: string; tags: string[] } }",
+      "accessibility_notes": "License badge has aria-label that expands SPDX shorthand (e.g., 'MIT License').",
+      "motion_notes": "Hover: 80ms border tint shift."
+    }
+  ],
+
+  "motion_budget": {
+    "library": "Motion (formerly Framer Motion)",
+    "rationale": "This is the utilitarian app. Motion is for layout-reorder readability and gentle page transitions, not delight. Per OPERATING-RULES.md §4: 'No heavy motion in core data views. R3F / Spline / heavy GSAP live in apps/portfolio/, not apps/dashboard/.'",
+    "allowed_patterns": [
+      "Page transition fade (opacity 0→1, 150ms ease-out) on App-Router segment changes",
+      "Layout reorder spring on DealsTable sort (Motion's layout prop, stiffness ~300, damping ~30, capped at 220ms)",
+      "Hover micro-interaction on cards and rows (border-color, 80ms)",
+      "Accordion expand/collapse (180ms height)",
+      "Filter-chip remove (opacity + width collapse, 150ms)",
+      "Empty-state mount fade (120ms)"
+    ],
+    "forbidden_patterns": [
+      "Parallax scroll",
+      "Scroll-jacking / scroll-driven choreography",
+      "Entrance animations longer than 250ms",
+      "Number count-up animations",
+      "Decorative continuous loops (gradients, marquees, ambient backgrounds)",
+      "GSAP timelines",
+      "Three.js / @react-three/fiber",
+      "Spline embeds",
+      "Lottie players",
+      "Rive runtime",
+      "Recharts default animations (isAnimationActive must be false)"
+    ],
+    "prefers_reduced_motion_strategy": "Single global hook (useReducedMotion from Motion) wired in the root layout. When reduce is true: all Motion transitions become duration: 0; layout reorders snap; accordion height transitions disabled (instant open/close); hover effects remain (color only, no transform).",
+    "max_transition_duration_ms": 250
+  },
+
+  "accessibility_notes": [
+    "Target: WCAG 2.2 AA across all 6 routes. AAA where cheap (e.g., contrast > 7:1 for body text on neutral backgrounds).",
+    "Color contrast: body text ≥ 4.5:1, large text ≥ 3:1, UI components and graphical objects ≥ 3:1. Status colors (red/amber/green/emerald) are sampled to meet 4.5:1 on both light and dark surfaces.",
+    "Color is never load-bearing. Every status conveyed by color is also conveyed by text and icon (HardGateBadge: color + ✓/✗ + 'PASS'/'FAIL'; ScoreBadge: color + numeric + tone-band-name in aria-label).",
+    "Keyboard navigation: every interactive element reachable by Tab in DOM order; focus rings always visible (Tailwind ring-2 ring-offset-2, never outline:none without a replacement); skip-to-main-content link as first focusable element on every page.",
+    "Recharts accessibility (the load-bearing one — Recharts SVG is not accessible by default): every chart wrapped in <figure> with <figcaption> describing the chart in one prose sentence; role=img on the SVG with aria-label summarizing the data; a visually-hidden <table> sibling renders the same data for screen reader and keyboard users; chart tooltips are keyboard-focusable (Recharts cursor + activeIndex driven from keyboard handlers on the wrapper).",
+    "Tables: real <table>/<thead>/<tbody>/<th scope> markup; sortable headers are <button> children with aria-sort='ascending'|'descending'|'none'; aria-live='polite' region announces 'showing N of M deals' on filter/sort change.",
+    "Forms (filter inputs only in v1): every input has a visible <label htmlFor>; required fields marked with aria-required; error messages tied via aria-describedby.",
+    "Empty/loading/error states: every list view has all three. Loading uses skeleton with role=status + aria-label='loading deals'. Empty uses a real heading + body + optional CTA. Error uses Alert with role=alert (this one we DO interrupt for).",
+    "Motion: prefers-reduced-motion: reduce honored globally via useReducedMotion; no auto-play, no infinite loops, no flashing > 3Hz.",
+    "Touch targets: minimum 44×44 px for all interactive elements per WCAG 2.5.5 (AAA but cheap).",
+    "Heading hierarchy: one h1 per page (route title); h2 for top-level regions; h3 for cards; no skipping levels.",
+    "Page titles: <title> per route follows pattern '<Route Name> — BQA Dashboard' so browser tabs and history are scannable.",
+    "Skill availability flag: web-accessibility and web-design-guidelines Tier-2 skills are documented in 01-Skills/ but NOT installed in the sandbox session that produced this plan. The principles above are applied from first-principles WCAG 2.2 + ARIA Authoring Practices Guide. dashboard-builder should re-run a lint pass with those skills active locally before declaring GATE 4."
+  ],
+
+  "aesthetic_direction_summary": {
+    "voice": "Operational, not promotional. The buyer is data-skeptical and capital-constrained; the UI's job is to earn trust by showing the math, the sources, and the gaps. No hero copy, no marketing voice, no 'AI-aesthetic word soup.'",
+    "palette": "Neutral slate (zinc-50 → zinc-950) with a single semantic accent (Atlanta-clay terracotta hsl(15 65% 48%)) for primary CTAs only. Status colors: rose-600 (fail/rejected), amber-600 (caution/flag), emerald-600 (pass/positive), sky-600 (info). All sampled to meet AA contrast on both light and dark surfaces.",
+    "typography": "Sans-only. Inter (variable) for everything. Scale: 12 / 14 / 16 / 18 / 20 / 24 / 32 (no 48+ in dashboard — that's portfolio territory). Tabular numerals (font-feature-settings: 'tnum') on every number cell in tables and stat blocks.",
+    "density": "Compact-by-default tables (row height 36-40 px). Generous (24-32 px) gutter on cards. The buyer is on a laptop researching deals; we optimize for rows-per-viewport without sacrificing the 44 px touch target on actual hit areas.",
+    "dark_mode": "First-class. Same palette, inverted. Persisted via shadcn's theme provider, defaults to system."
+  }
+}
