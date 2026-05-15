@@ -106,6 +106,21 @@ User chose to resume locally before Phase 3. Rationale: Phase 3+ depends increas
 **Critical first actions on the user's machine, before any new orchestrator work**
 1. Rotate the PAT (pasted in chat = small credential leak)
 2. Install Tier 1 plugins (superpowers, frontend-design, context7, playwright, claude-mem)
-3. Then `cc` in the repo root and tell the orchestrator: "Resume Phase 3."
+3. Then `cc` in the repo root and tell the orchestrator: "Resume Phase 3 using the buyer-001 search rubric. No fabricated listings."
+
+---
+
+## 2026-05-14 — Phase 3 sourcing policy amendment
+
+**User direction:** Lifted the original brief's "no marketplace touching" hard block. Replaced with a public-web-search policy: agent may fetch marketplace teaser pages, broker sites, and SBA lender pipelines once per unique URL, respecting robots.txt and ToS. **No fabricated listings.** No bulk-scraping or pagination loops.
+
+**Changes made**
+- `obsidian-vault/00-Claude-Control/OPERATING-RULES.md` §3 Lane B: lifted the marketplace block; added the public-web-search policy + "single-shot URL fetch" hard cap
+- `.claude/agents/due-diligence-researcher.md`: added the listing-discovery responsibility, added WebSearch to its tools list, added the marketplace-teaser handling rules (low confidence, surface broker silences, `source_type: marketplace_teaser`)
+- `obsidian-vault/03-Deals/templates/search-rubric-buyer-001.md`: new file. One-page rubric the buyer can keep open while manually browsing marketplaces AND that the agent uses as its targeting layer
+- `HANDOFF.md` § "Phase 3 sourcing policy (amended)": new section with the revised Phase 3 plan
+
+**Rationale**
+The original brief's block existed for legal/ToS reasons (BizBuySell etc. forbid automated scraping) and data-quality reasons (teasers are intentionally vague). Single-shot URL fetches + robots.txt respect + no bulk crawling + treating teaser data as preliminary keep the legal posture defensible while delivering real listings. Marketplace data redistribution remains forbidden.
 
 ---

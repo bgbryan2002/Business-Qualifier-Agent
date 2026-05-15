@@ -50,12 +50,18 @@ Reject if:
 - Sources: official docs, canonical GitHub repos, package registries (npm, PyPI), Anthropic plugin directory, `context7` plugin
 - Output: `SkillCandidate` records → `repo-validator` → either `01-Skills/<category>/` or `05-Validation/source-manifests/REJECTED.md`
 
-### Lane B — Due-diligence research (`due-diligence-researcher`)
+### Lane B — Due-diligence research + listing discovery (`due-diligence-researcher`)
 - Whitelist: business registries (SoS, county clerk, IRS public records, OSHA, EPA), court records (PACER, state portals), BBB / Yelp / Google Maps / Trustpilot / Glassdoor (read-only), news aggregators, LinkedIn (public read only), business website + socials, trade publications, government licensing databases
-- **Hard blocks:**
-  - No scraping SMB listing marketplaces (BizBuySell, BizQuest, broker portals). Importer-only ingestion.
+- **Public-web listing discovery (amended 2026-05-14 per buyer direction).** The Lane-B agent may use WebSearch + WebFetch to find "businesses for sale" listings on the open web — marketplace teaser pages (BizBuySell, BizQuest, DealStream, etc.), broker websites, SBA-lender pipeline pages, news, state license-transfer filings. Constraints:
+  - **One fetch per unique listing URL.** No pagination loops, no bulk crawling, no rate-defeating retries.
+  - **Respect robots.txt and ToS.** If a site disallows automated access, stop on that domain and log to `RUN-LOG.md`.
+  - **Treat marketplace teasers as preliminary.** Teaser data is intentionally vague. Normalize what's public into a `ListingPacket`, surface the gaps the broker is hiding, and flag every claim as `as_of_date: <fetch-date>` so it ages out fast. Real diligence happens *after* NDA + CIM.
+  - **The buyer-specific search rubric is the targeting layer.** See `obsidian-vault/03-Deals/templates/search-rubric-buyer-001.md` (one per buyer) for the must-have / must-avoid filters that constrain the search.
+- **Hard blocks (still in force):**
+  - No bulk-scraping or repeated/automated marketplace crawling. Single-shot URL fetches per listing only.
   - No paywalled databases (D&B, ZoomInfo, PitchBook) without human-supplied credentials.
   - No personal-life snooping. Owner research = business-operator track record only.
+  - No reselling or redistributing marketplace listing data. Anything fetched stays in this private vault.
 - Tool stack: `playwright` plugin, `WebFetch`, `context7`, `browser-use` as escalation (Phase 3+)
 - Output: `DueDiligencePacket` records → `03-Deals/due-diligence/`. Every claim cites `source_url` + `retrieved_at`. Unsourced claims stripped before vault write.
 - **Skill creation feedback loop:** repeated research patterns get codified as `SKILL.md` under `01-Skills/research/`.
@@ -63,7 +69,7 @@ Reject if:
 ## 4. Safety rails
 
 - No legal finality. Entity / tax / structure recommendations route to `05-Validation/signoffs/` for human sign-off.
-- No marketplace data redistribution. Sample fetches stay in `05-Validation/source-manifests/marketplace-samples/`.
+- No marketplace data redistribution. Single-shot fetches stay in this private vault. Sample fetches for tooling validation stay in `05-Validation/source-manifests/marketplace-samples/`.
 - No license-less skills. No license capture = no `01-Skills/` entry.
 - No oversized project-root `CLAUDE.md`. Stays under ~200 lines; detail lives here.
 - No heavy motion in core data views. R3F / Spline / heavy GSAP live in `apps/portfolio/`, not `apps/dashboard/`.

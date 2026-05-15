@@ -28,9 +28,9 @@ That's it. Claude Code reads `CLAUDE.md` from the current working directory auto
 
 Then in the Claude Code session, just say:
 
-> *"Resume Phase 3. Fabricate 3-5 listings consistent with buyer-001 (Atlanta-metro, semi-absentee-friendly, $250k-$550k, recurring revenue) unless I paste real ones first."*
+> *"Resume Phase 3. Use the buyer-001 search rubric to find real qualified listings on the public web, then run the full DD + scoring + memo pipeline. No fabricated listings."*
 
-The orchestrator subagent picks it up.
+The orchestrator subagent picks it up. **No fabricated listings this round** — see the "Phase 3 sourcing policy (amended)" section below.
 
 ---
 
@@ -109,21 +109,39 @@ npx skills add vercel-labs/agent-skills@web-design-guidelines
 
 ---
 
-## Where Phase 3 picks up
+## Phase 3 sourcing policy (amended 2026-05-14)
+
+The original brief blocked all marketplace touching. The user lifted that block for public-web search (one-shot fetches per URL, respect robots.txt, no bulk crawling). **No fabricated listings.**
 
 The orchestrator's next move when you resume:
 
-1. **Spawn `acquisition-analyst`** to either:
-   - Read `inputs/listings.json` if you've put real broker exports there, OR
-   - Fabricate 3-5 plausible listings consistent with `buyer-001` (Atlanta-metro service businesses, $250-550k, semi-absentee-friendly, recurring revenue, manager-in-place). Same authorization model you used for Buyer 001.
-2. **Normalize each listing** → `ListingPacket` JSON in `obsidian-vault/03-Deals/normalized/`
-3. **Spawn `due-diligence-researcher`** per listing → `DueDiligencePacket` in `obsidian-vault/03-Deals/due-diligence/` (uses your local `playwright` plugin for JS-heavy sources)
-4. **Compute scores** → `DealAssessment` in `obsidian-vault/03-Deals/scored/`, applying hard gates (target owner profit / financing feasibility / license transferability)
-5. **Draft memos** for top deals → `obsidian-vault/03-Deals/memos/`
-6. **Spawn `legal-entity-analyst`** for top deals → entity-advisory checklists in `obsidian-vault/05-Validation/signoffs/`
-7. Auto-commit + push at each step (the `SubagentStop` hook handles this)
+1. **Read the search rubric** at `obsidian-vault/03-Deals/templates/search-rubric-buyer-001.md`. This is the buyer-specific filter — must-haves, must-avoids, price band, geography, industries to include/exclude, marketplace search-form cheat sheet.
+2. **Spawn `due-diligence-researcher`** in listing-discovery mode: use WebSearch + WebFetch to find real for-sale listings matching the rubric on BizBuySell, BizQuest, DealStream, broker direct sites, SBA lender pipelines, state license-transfer filings. **One fetch per unique listing URL.** Aim for 8-15 candidate listings.
+3. **Normalize each promising listing** → `ListingPacket` JSON in `obsidian-vault/03-Deals/normalized/`. Teaser-derived fields get `confidence ≤ 0.5`; null fields stay null (no guessing). `source.source_type: marketplace_teaser`.
+4. **Surface broker silences** in each normalized packet — what the teaser is conspicuously NOT saying (no SDE breakdown? no employee count? owner-hours unstated?)
+5. **Spawn `due-diligence-researcher`** in diligence mode per listing → `DueDiligencePacket` in `obsidian-vault/03-Deals/due-diligence/`. Uses local `playwright` plugin for JS-heavy public sources (state SoS portals, court records, BBB).
+6. **Compute scores** → `DealAssessment` in `obsidian-vault/03-Deals/scored/`, applying hard gates (target owner profit / financing feasibility / license transferability)
+7. **Draft memos** for top deals → `obsidian-vault/03-Deals/memos/`. Each memo's "Recommended next step" should be one of: request broker NDA, pass, request specific docs from seller.
+8. **Spawn `legal-entity-analyst`** for top deals → entity-advisory checklists in `obsidian-vault/05-Validation/signoffs/`
+9. Auto-commit + push at each step (the `SubagentStop` hook handles this)
 
-At GATE 3, orchestrator presents the top 5 deals with scores, top risks, top follow-ups, and asks: "Build the operational dashboard and the showcase portfolio?"
+At GATE 3, orchestrator presents the top 5 deals with scores, top risks, top follow-ups, broker-silence summary, and asks: "Build the operational dashboard and the showcase portfolio?"
+
+### Your role during Phase 3 (parallel track)
+
+While the agent searches, **you keep the search rubric open in a browser tab** and click through BizBuySell / BizQuest manually. When you find a listing the agent missed, paste its URL into `inputs/listings.json` (one entry per listing). The next time you ping the orchestrator, it'll pick those up automatically.
+
+This human-in-the-loop is genuinely better than agent-only — your gut catches stuff a parser can't (broker's tone, photos, listing freshness). Treat the agent as a research assistant, not a replacement.
+
+### What "real diligence" means
+
+Public-web data (marketplace teasers, BBB, registry, court records) is **preliminary signal**, not verdict. For any listing that scores well at GATE 3:
+
+1. Buyer requests broker NDA
+2. Broker sends the CIM (Confidential Information Memorandum) with real financials
+3. Buyer pastes CIM data into the existing `ListingPacket` or as `obsidian-vault/03-Deals/cims/<listing-id>.md`
+4. Orchestrator re-scores with `source.source_type: broker_cim` (high-confidence data)
+5. Top survivors get the legal-entity / lender pre-qual path
 
 ---
 
