@@ -1,0 +1,427 @@
+{
+  "id": "PortfolioPlan",
+  "schema_version": "1.0",
+  "plan_id": "portfolio-plan-v1",
+  "as_of_date": "2026-05-15",
+  "buyer_id": "buyer-001",
+  "target_app_path": "apps/portfolio/",
+  "stack": {
+    "framework": "Next.js 15 App Router + TypeScript strict",
+    "styling": "Tailwind CSS + CSS variables for tokens",
+    "primitives": "hand-rolled on Radix UI (consistency with dashboard, no shadcn)",
+    "motion_default": "motion (formerly Framer Motion)",
+    "motion_timeline": "gsap + ScrollTrigger (one hero timeline, one cross-comparison scroll-driven)",
+    "three_d": "@react-three/fiber + @react-three/drei + three (single hero scene, <10k tris, lazy)",
+    "state_driven_micro": "@rive-app/react-canvas",
+    "loop_transitions": "@lottiefiles/dotlottie-react",
+    "charts": "visx (low-level, fully controlled) — Recharts is reserved for the dashboard"
+  },
+  "aesthetic_direction": {
+    "voice": "Editorial dossier. The buyer is reading a private memo prepared for them by a partner, not browsing a SaaS product. Page-turn cadence. Numbers are large and confident; prose is short and load-bearing; whitespace does the heavy lifting.",
+    "density": "low-medium. Each surface earns its scroll. No dashboards-in-a-portfolio.",
+    "typography": {
+      "headline": {
+        "family": "Fraunces (Google Fonts) — variable, OPSZ + SOFT + WONK axes",
+        "weight_range": "300-700",
+        "tracking": "-0.02em at display sizes, -0.01em at H2",
+        "rationale": "Fraunces is a contemporary serif with a soft humanist edge — it reads as 'considered' and 'editorial' without the law-firm stiffness of Tiempos or the trend-bait of Editorial New. The variable WONK axis gives the hero a single moment of personality (subtle splay on the buyer's name) that no React/Next default ever ships with."
+      },
+      "body": {
+        "family": "Inter Tight (Google Fonts) — variable",
+        "weight_range": "400-600",
+        "tracking": "-0.005em",
+        "rationale": "Inter Tight is dense and modern without being generic Inter. Pairing a soft serif headline with a tight neo-grotesque body is the deliberate inverse of the dashboard's all-Inter utility voice — same family root, different mood."
+      },
+      "numeric": {
+        "family": "JetBrains Mono (Google Fonts) — variable",
+        "usage": "every dollar figure, every score, every percentage in narrative copy. Tabular figures. Slightly smaller cap-height than Inter Tight so it doesn't shout next to body text.",
+        "rationale": "Mono numerics in editorial layouts (NYT, FT, Bloomberg) signal 'this is a number, trust it'. In a portfolio about cash flows and scores, the typography itself becomes a credibility cue."
+      },
+      "type_scale": [
+        { "token": "display", "size_rem": 6.0, "line_height": 0.95, "weight": 400, "usage": "hero buyer name, single use per page" },
+        { "token": "h1", "size_rem": 3.5, "line_height": 1.05, "weight": 400, "usage": "section openers" },
+        { "token": "h2", "size_rem": 2.25, "line_height": 1.15, "weight": 500, "usage": "deal card titles" },
+        { "token": "h3", "size_rem": 1.5, "line_height": 1.25, "weight": 500, "usage": "sub-sections" },
+        { "token": "lead", "size_rem": 1.375, "line_height": 1.5, "weight": 400, "usage": "thesis paragraph, first paragraph of each surface" },
+        { "token": "body", "size_rem": 1.0625, "line_height": 1.65, "weight": 400, "usage": "default" },
+        { "token": "caption", "size_rem": 0.875, "line_height": 1.4, "weight": 500, "usage": "labels, citations, source URLs" }
+      ],
+      "weight_ladder": "400 (regular) → 500 (medium, sub-section / label) → 600 (emphasis only). 700 reserved for inline strong; no 800/900."
+    },
+    "palette": {
+      "rationale": "Two-temperature palette: a deep verdant 'ledger green' anchors the brand (money, parsing, evergreen records) against a warm bone paper. Status colors are muted, not neon — this is a dossier, not a dashboard. The terracotta accent from the dashboard is intentionally NOT carried over; this app gets its own identity (gilt) so the buyer can feel the surface change.",
+      "mode": "dark-first (paper-on-ink), with a light 'reading mode' toggle that flips paper to ink",
+      "swatches": {
+        "ink": { "hex": "#0E1410", "name": "Deep ledger ink", "usage": "primary background (dark mode)", "wcag_pair_with": "bone (16.8:1)" },
+        "bone": { "hex": "#F4EFE6", "name": "Bone paper", "usage": "primary background (light mode), primary text on ink", "wcag_pair_with": "ink (16.8:1)" },
+        "verdant": { "hex": "#1F3D2E", "name": "Ledger verdant", "usage": "surfaces, card panels in dark mode, brand accent in light", "wcag_pair_with": "bone (10.4:1)" },
+        "moss": { "hex": "#7BA68A", "name": "Moss", "usage": "secondary accent, fit-meter mid-range, success-soft", "wcag_pair_with": "ink (8.1:1)" },
+        "gilt": { "hex": "#C7A24C", "name": "Antique gilt", "usage": "primary accent — buyer name, score numerals, hero highlight. The one warm note.", "wcag_pair_with": "ink (10.2:1)" },
+        "rust": { "hex": "#A24E2B", "name": "Iron rust", "usage": "risk / hard-gate-fail / retraction band. Muted, not alarm-red.", "wcag_pair_with": "bone (5.4:1)" },
+        "vellum": { "hex": "#D9D1C0", "name": "Vellum", "usage": "borders, dividers, low-contrast captions on bone", "wcag_pair_with": "ink (12.1:1)" }
+      },
+      "contrast_table": [
+        { "fg": "bone", "bg": "ink", "ratio": "16.8:1", "WCAG": "AAA all sizes" },
+        { "fg": "gilt", "bg": "ink", "ratio": "10.2:1", "WCAG": "AAA all sizes" },
+        { "fg": "moss", "bg": "ink", "ratio": "8.1:1", "WCAG": "AAA all sizes" },
+        { "fg": "rust", "bg": "bone", "ratio": "5.4:1", "WCAG": "AA body / AAA large" },
+        { "fg": "vellum", "bg": "ink", "ratio": "12.1:1", "WCAG": "AAA all sizes" },
+        { "fg": "ink", "bg": "bone", "ratio": "16.8:1", "WCAG": "AAA all sizes (light mode)" }
+      ]
+    },
+    "motion_language": "Page-turn, not slideshow. Entries ease-out at 260ms with a 12px upward translate and opacity 0→1; exits are faster (160ms, no translate) — Emil Kowalski's 'exit faster than enter' rule. Layout reorders use spring physics (stiffness 280, damping 32) — Emil's 'spring-physics on layout reorder'. Shared-element transitions on the deal-card → deal-detail navigation give the dossier its 'book-binding' feel — Emil's 'shared-element layout transitions'. No parallax. No scroll-jacking. No count-ups longer than 600ms. The R3F hero is a single contemplative drift, not a demo reel. Everything clamps to opacity-only under prefers-reduced-motion.",
+    "ui_pro_max_rules_applied": [
+      "Accessibility-first (priority 1): WCAG 2.2 AA on every surface; AAA on body text",
+      "Touch (priority 2): 44x44 hit targets minimum, 48x48 on the three deal cards",
+      "Performance (priority 3): R3F lazy-loaded, single hero scene, <10k tris budget",
+      "Style (priority 4): one accent color (gilt) used sparingly — under 5% of surface",
+      "Type (priority 6): max two type families + one mono; modular scale documented",
+      "Color (priority 6): non-load-bearing semantic colors (status always has icon + word)",
+      "Animation (priority 7): durations clamped, prefers-reduced-motion respected, no decorative loops"
+    ]
+  },
+  "narrative_structure": [
+    "hero",
+    "buyer-thesis",
+    "the-three-truths",
+    "deal-l002-negotiable",
+    "deal-l003-future-target",
+    "deal-l004-flagged",
+    "cross-comparison",
+    "recommended-next-steps",
+    "system-integrity-appendix",
+    "due-diligence-appendix"
+  ],
+  "surfaces": [
+    {
+      "id": "hero",
+      "route": "/",
+      "purpose": "Establish the buyer as the narrative protagonist and the document as a designed artifact, not a SaaS page",
+      "content": "Buyer name (set in Fraunces display, WONK axis nudged), one-sentence thesis, as_of_date, single R3F scene (slow-drifting ledger / cards / paper), CTA: 'Begin reading'",
+      "motion_role": "GSAP entry timeline orchestrates: 0ms type-mask reveal of buyer name (letters drawn) → 700ms R3F scene fades in → 1200ms thesis line types-on → 1800ms CTA fades in. Single timeline, scrubable for reduced-motion (jump-to-end).",
+      "three_d": true,
+      "data_bound": false
+    },
+    {
+      "id": "buyer-thesis",
+      "route": "/thesis",
+      "purpose": "Articulate the buyer's posture: capital, operator profile, what they're hunting and why",
+      "content": "Editorial layout. Left column: prose ('22, six months at Big 4, lives at home, $22k liquid, $450k SBA capacity, twelve hours a week — the constraints are the strategy'). Right column: pull-quote with the target_owner_profit number set in gilt JetBrains Mono at display size.",
+      "motion_role": "Motion fade-up on scroll-into-view (260ms, ease-out). Shared-element transition on the buyer-name from hero (Emil pattern).",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["02-Buyers/profiles/buyer-001.json", "02-Buyers/profiles/buyer-001.md"]
+    },
+    {
+      "id": "the-three-truths",
+      "route": "/findings",
+      "purpose": "The honest pivot. Tell the buyer: zero clean wins today, here's what we found, here's why that's information not failure",
+      "content": "Three large blocks: 'Negotiable' (L002), 'Future-target' (L003), 'Flagged' (L004). Each block is one paragraph of prose + one Rive fit-gauge (score / 100). This surface frames everything that follows. The framing line — 'Three listings. Zero clean wins. One conversation worth having today.' — is the load-bearing copy of the entire portfolio.",
+      "motion_role": "Motion stagger (40ms between blocks, 260ms each). Rive gauges run their entry state machine on intersection-observer trigger.",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["03-Deals/scored/draft/L002-assessment.md", "03-Deals/scored/draft/L003-assessment.md", "03-Deals/memos/draft/L004-memo.md"]
+    },
+    {
+      "id": "deal-l002-negotiable",
+      "route": "/deals/l002",
+      "purpose": "Present the negotiable candidate with full color: why it's the one to call about, where the gap is, what the conversation looks like",
+      "content": "Cover (business name, score 62, location, asking $360k, EBITDA $107k vs target $140k — set side-by-side, gilt). Sub-sections: 'Why it's the one to talk about', 'The $33k gap (and how negotiation closes it)', 'Top 5 risks' (Rive risk-meter), 'Top 5 opportunities', 'What the broker isn't saying' (the franchisor identity hidden), 'Recommended ask: NDA + price negotiation to $300k OR seller note', 'Receipts' (link to DD appendix anchor).",
+      "motion_role": "Per-card Rive gauge for fit-score (animated arc, state machine: enter / fail / pass / negotiable). Motion layout transition from /findings card to full /deals/l002 page (shared-element). Subtle GSAP scroll-pin on the $33k gap visualization — a single moment, not a sequence.",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["03-Deals/listings/draft/L002-franchise-cleaning-north-atlanta.md", "03-Deals/scored/draft/L002-assessment.md", "03-Deals/due-diligence/draft/L002-dd.md"]
+    },
+    {
+      "id": "deal-l003-future-target",
+      "route": "/deals/l003",
+      "purpose": "Present L003 as the right business at the wrong moment. Establish the 18-24 month patience play.",
+      "content": "Cover (FedEx P&D Routes, score 44, asking $525k, SDE $162k). Headline: 'The right model. The wrong moment.' Sub-sections: 'Why this is the dream model' (true absentee, protected territories, manager in place), 'Why it cannot happen today' ($350k min down vs $22k liquid, SBA explicitly blocked), 'The 18-24 month math' (small Sankey: consulting income → savings rate → liquid capital trajectory), 'What to watch' (FedEx ISP program changes, similar listings to monitor).",
+      "motion_role": "Motion fade-up. Sankey draws progressively on scroll (Motion path-length animation, not GSAP — single chart, no need for timeline). Rive gauge encodes 'gated' state distinctly from L002's 'negotiable' state.",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["03-Deals/listings/draft/L003-fedex-routes-atlanta.md", "03-Deals/scored/draft/L003-assessment.md", "03-Deals/due-diligence/draft/L003-dd.md"]
+    },
+    {
+      "id": "deal-l004-flagged",
+      "route": "/deals/l004",
+      "purpose": "System-integrity moment. Show the buyer the deal that LOOKED too good and explain how the filter caught it. This is the credibility surface.",
+      "content": "Cover band in rust (subdued, not alarm). Title: 'L004 — Savannah Gasket Replacement.' Sub-headline: 'Looked like a 94% first-year return. Wasn't.' Sections: 'The original case' (1.07x SDE multiple, $294k CF on $315k ask, the math that seduced a faster system), 'The geography reject' (Savannah is 4 hours from Atlanta — operator-fit fail), 'The pattern that emerged' (Donald Webster broker pattern: 4+ listings under 1.5x SDE across pest control, aircraft detailing, fencing, gasket replacement — same broker, same anomaly, different industries). 'Why we surface this' (the filter only works if you can see what it caught).",
+      "motion_role": "Rust band fades in on enter (Motion, 320ms — slightly slower than other entries to land the weight). The broker-pattern reveal uses a small Lottie of dots clustering into a flagged ring (single-use, decorative-but-meaningful — under 40KB).",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["03-Deals/listings/draft/L004-gasket-replacement-savannah.md", "03-Deals/memos/draft/L004-memo.md", "03-Deals/templates/search-rubric-buyer-001.md"]
+    },
+    {
+      "id": "cross-comparison",
+      "route": "/comparison",
+      "purpose": "Multi-axis view of L002 vs L003 vs L004 across the dimensions the buyer cares about",
+      "content": "Three axes revealed sequentially on scroll: (1) price vs first-year cash yield to buyer, (2) operator-fit vs effort required, (3) capital-feasibility today vs in 24 months. Each axis is a visx scatter / dot-plot with deal labels in JetBrains Mono.",
+      "motion_role": "GSAP ScrollTrigger drives the axis-by-axis reveal. Each axis: ink-line draws across screen (700ms), then deal-dots settle into position (Motion spring, 320ms each, staggered 80ms). Three axes total, one sequence. This is the second of two GSAP uses in the whole app.",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["03-Deals/scored/draft/L002-assessment.md", "03-Deals/scored/draft/L003-assessment.md", "03-Deals/memos/draft/L004-memo.md"]
+    },
+    {
+      "id": "recommended-next-steps",
+      "route": "/next-steps",
+      "purpose": "Convert the dossier into action. Three concrete tasks, in order.",
+      "content": "Numbered list, large type, generous whitespace. 1. 'Call Mark Werbalowsky at Sunbelt Atlanta about L002. Ask for the franchisor name, FDD Item 19, and whether seller will accept $300k or carry a note.' 2. 'Open a savings account discipline now. L003 needs $350k. Eighteen months of consulting bonuses + side-saving can get you there.' 3. 'Pre-qualify with an SBA preferred lender. Six months of W-2 + a clear narrative beats waiting two years.' Each step has an estimated-time chip and the exact source citation underneath.",
+      "motion_role": "Motion crossfade between an at-rest and on-hover state for each step (the step number fills with gilt on hover). No timeline.",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["02-Buyers/profiles/buyer-001.md (consistency_flags)", "03-Deals/scored/draft/L002-assessment.md", "03-Deals/scored/draft/L003-assessment.md"]
+    },
+    {
+      "id": "system-integrity-appendix",
+      "route": "/system",
+      "purpose": "The 'why trust this output' surface. A one-page accounting of what the system rejected and why.",
+      "content": "Timeline-style list (vertical, ink-rule down center): L004 retroactively flagged → broker-pattern hardened in rubric → L007/L008 retracted → search-rubric-buyer-001.md updated. Each event has date, agent, outcome, and a one-line takeaway. This is the surface that says 'the negative results are part of the product.'",
+      "motion_role": "Motion stagger on scroll (60ms between events, 240ms each). No GSAP needed.",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["RUN-LOG.md (L007/L008 retraction entries, broker-pattern hardening)", "03-Deals/templates/search-rubric-buyer-001.md"]
+    },
+    {
+      "id": "due-diligence-appendix",
+      "route": "/appendix",
+      "purpose": "The receipts. Full DD packets behind accordion expand. This is the 'show your work' surface.",
+      "content": "Three accordion panels, one per deal. Each expanded panel renders the DD claims list (with source URLs, retrieved_at, confidence scores), red flags, follow-up actions. Plain typography, no decoration — this surface intentionally looks like a printed appendix.",
+      "motion_role": "dotLottie expand/collapse glyph (small, 24x24, 12KB). Motion height-animation on accordion content (200ms ease-out, instant on prefers-reduced-motion). sr-only text always present (open/close state announced).",
+      "three_d": false,
+      "data_bound": true,
+      "data_sources": ["03-Deals/due-diligence/draft/L002-dd.md", "03-Deals/due-diligence/draft/L003-dd.md", "03-Deals/memos/draft/L004-memo.md"]
+    }
+  ],
+  "motion_budget": {
+    "r3f": {
+      "scenes": [
+        {
+          "id": "hero-ledger-drift",
+          "surface": "hero",
+          "depicts": "Three suspended paper cards (representing the three deals) drifting in a slow ambient rotation under a single warm rim-light. Cards are blank rectangles with a subtle gilt edge — the buyer's eye fills in the meaning. No text in the 3D scene. Camera is fixed; scene drifts.",
+          "tri_count_budget": 8000,
+          "draw_call_budget": 8,
+          "lighting": "1 directional (rim, gilt-tinted) + 1 ambient at 0.15 intensity",
+          "shadows": "contact shadows only (drei <ContactShadows>)",
+          "loading": "next/dynamic with ssr:false, Suspense fallback = static PNG at same camera angle (2x DPR, < 80KB AVIF)",
+          "prefers_reduced_motion": "render the static PNG fallback, do not mount the canvas",
+          "mobile": "static PNG fallback under 768px viewport (R3F skipped on mobile to preserve INP)",
+          "asset_source": "primitives only (BoxGeometry rounded via drei <RoundedBox>), no external GLB"
+        }
+      ]
+    },
+    "gsap": {
+      "timelines": [
+        {
+          "id": "hero-entry-timeline",
+          "surface": "hero",
+          "duration_ms": 2400,
+          "scrubbable": false,
+          "behavior": "Letter-mask reveal of buyer name → R3F fade-in → thesis type-on → CTA fade-in",
+          "why_gsap_not_motion": "Sequence of dependent steps with precise timing across heterogeneous elements (SVG mask, canvas, DOM). GSAP timeline syntax is cleaner than chained Motion variants. Single use justified.",
+          "prefers_reduced_motion": "timeline.progress(1) on mount — all elements snap to final state"
+        },
+        {
+          "id": "cross-comparison-scroll",
+          "surface": "cross-comparison",
+          "trigger": "ScrollTrigger pinned section",
+          "duration": "scroll-controlled (no fixed ms)",
+          "behavior": "Three axes revealed sequentially as user scrolls through pinned viewport",
+          "why_gsap_not_motion": "ScrollTrigger pin + scrub-driven reveal across three sub-scenes is GSAP's home turf. Motion's scroll utilities are less ergonomic for pin behavior.",
+          "prefers_reduced_motion": "ScrollTrigger disabled; all three axes render at full opacity simultaneously, scroll behaves normally (no pin)"
+        }
+      ],
+      "total_gsap_uses": 2,
+      "rule": "GSAP appears in exactly two surfaces. Everywhere else, Motion."
+    },
+    "motion": {
+      "default_durations": {
+        "enter_ms": 260,
+        "exit_ms": 160,
+        "hover_ms": 80
+      },
+      "default_easing": {
+        "enter": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "exit": "cubic-bezier(0.7, 0, 0.84, 0)"
+      },
+      "patterns": [
+        { "name": "fade-up", "translate_px": 12, "uses": ["section enters", "card enters", "thesis paragraph"] },
+        { "name": "spring-layout", "stiffness": 280, "damping": 32, "uses": ["layout reorder", "accordion height", "filter chips"] },
+        { "name": "shared-element", "uses": ["buyer-name from hero → /thesis", "deal-card from /findings → /deals/[id]"], "emil_pattern": "shared-element layout transitions" },
+        { "name": "stagger", "delay_ms": 40, "uses": ["the-three-truths blocks", "next-steps numbered list"] }
+      ],
+      "prefers_reduced_motion": "All translate values → 0. All durations → 1ms (effectively instant). Opacity transitions preserved at half duration (no motion sickness risk from pure opacity)."
+    },
+    "rive": {
+      "files": [
+        {
+          "id": "fit-gauge",
+          "purpose": "Score / 100 arc gauge used on every deal card (3 instances)",
+          "states": ["idle", "enter", "negotiable (L002, 62/100 → gilt arc)", "gated (L003, 44/100 → moss arc with rust gate-icon)", "flagged (L004, n/a → rust arc with strike-through)"],
+          "size_budget_kb": 30,
+          "source": "custom — produced ahead of build in Rive editor (rive.app)",
+          "fallback": "static SVG at same dimensions; sr-only text 'Fit score: 62 of 100 — negotiable'"
+        },
+        {
+          "id": "risk-meter",
+          "purpose": "Five-segment risk indicator on /deals/l002 and /deals/l003",
+          "states": ["empty", "low (1 segment)", "medium (3 segments)", "high (5 segments)"],
+          "size_budget_kb": 18,
+          "source": "custom",
+          "fallback": "static SVG, sr-only text with numeric"
+        }
+      ],
+      "total_rive_files": 2,
+      "rule": "Rive only where the asset encodes state transitions a static SVG cannot. Never decorative."
+    },
+    "lottie": {
+      "files": [
+        {
+          "id": "broker-pattern-cluster",
+          "purpose": "Dots clustering into a flagged ring on /deals/l004 — visual metaphor for the broker pattern discovery",
+          "size_budget_kb": 40,
+          "duration_ms": 1800,
+          "loop": false,
+          "source": "custom dotLottie (.lottie format, not raw .json — 60% smaller)",
+          "fallback": "static SVG of the final clustered state",
+          "prefers_reduced_motion": "static SVG"
+        },
+        {
+          "id": "accordion-chevron",
+          "purpose": "Open/close glyph on /appendix accordions",
+          "size_budget_kb": 12,
+          "duration_ms": 200,
+          "loop": false,
+          "source": "lottiefiles community (CC0) or custom",
+          "fallback": "CSS rotate on a static SVG chevron",
+          "prefers_reduced_motion": "CSS rotate, instant"
+        }
+      ],
+      "total_lottie_files": 2,
+      "total_lottie_budget_kb": 52
+    }
+  },
+  "asset_pipeline": [
+    {
+      "asset": "Hero R3F scene (hero-ledger-drift)",
+      "type": "code",
+      "deliverable": "apps/portfolio/src/scenes/HeroLedgerDrift.tsx",
+      "dependencies": ["@react-three/fiber", "@react-three/drei", "three"],
+      "blocking": false,
+      "fallback_required": "apps/portfolio/public/hero-fallback.avif (1920x1080, < 80KB)",
+      "owner": "portfolio-designer",
+      "notes": "Primitives only; no external GLB. Render fallback PNG first via headless render or single screenshot from dev."
+    },
+    {
+      "asset": "Fit-gauge Rive (.riv)",
+      "type": "rive",
+      "deliverable": "apps/portfolio/public/rive/fit-gauge.riv",
+      "dependencies": ["Rive editor (rive.app, free tier)"],
+      "blocking": true,
+      "states_required": ["idle", "enter", "negotiable", "gated", "flagged"],
+      "owner": "portfolio-designer (designs state machine) or human (if Rive editor preferred locally)",
+      "notes": "Must exist before /findings and /deals/[id] surfaces are buildable. Static SVG fallback in same directory."
+    },
+    {
+      "asset": "Risk-meter Rive (.riv)",
+      "type": "rive",
+      "deliverable": "apps/portfolio/public/rive/risk-meter.riv",
+      "dependencies": ["Rive editor"],
+      "blocking": true,
+      "states_required": ["empty", "low", "medium", "high"],
+      "owner": "portfolio-designer or human"
+    },
+    {
+      "asset": "Broker-pattern cluster (.lottie)",
+      "type": "lottie",
+      "deliverable": "apps/portfolio/public/lottie/broker-pattern-cluster.lottie",
+      "blocking": false,
+      "fallback_required": "static SVG of final state",
+      "owner": "portfolio-designer (can be produced last; surface renders without it)",
+      "size_budget_kb": 40
+    },
+    {
+      "asset": "Accordion chevron (.lottie)",
+      "type": "lottie",
+      "deliverable": "apps/portfolio/public/lottie/accordion-chevron.lottie",
+      "blocking": false,
+      "alternative": "Pure CSS rotate on inline SVG — if Lottie file slips, ship CSS",
+      "size_budget_kb": 12
+    },
+    {
+      "asset": "Typography self-hosting",
+      "type": "fonts",
+      "deliverable": "apps/portfolio/src/app/fonts.ts using next/font/google for Fraunces + Inter Tight + JetBrains Mono",
+      "blocking": true,
+      "subsetting": "Latin only; preload Fraunces display weight + Inter Tight 400/500",
+      "owner": "portfolio-designer"
+    },
+    {
+      "asset": "CSS variable token system",
+      "type": "code",
+      "deliverable": "apps/portfolio/src/app/globals.css with --color-ink, --color-bone, --color-verdant, --color-moss, --color-gilt, --color-rust, --color-vellum + dark/light flip variables",
+      "blocking": true,
+      "owner": "portfolio-designer"
+    },
+    {
+      "asset": "Photography / illustration",
+      "type": "imagery",
+      "deliverable": "NONE in v1 — surfaces are typography + R3F + Rive + Lottie + visx. No stock photography. No illustration.",
+      "blocking": false,
+      "rationale": "Editorial design pattern: when typography and motion carry the design, photography becomes a distraction. Deferred to v2 if needed."
+    }
+  ],
+  "accessibility_notes": [
+    "WCAG 2.2 AA on every surface; AAA on body text contrast (ratios documented in palette.contrast_table). [ui-ux-pro-max rule 1: Accessibility-first]",
+    "Touch targets minimum 44x44 px (WCAG 2.5.5); 48x48 on the three primary deal cards. [ui-ux-pro-max rule 2: Touch]",
+    "Color is never load-bearing. Score arcs include numeric text. Status colors (rust/moss/gilt) always paired with icon + word. Hard-gate badges show ✓/✗ icon + 'PASS'/'FAIL' string. [ui-ux-pro-max rule 6: Color]",
+    "prefers-reduced-motion: all translate animations → 0px, durations → 1ms (functionally instant), R3F replaced by static PNG, GSAP timelines progress(1) on mount, Lottie replaced by static SVG. [ui-ux-pro-max rule 7: Animation]",
+    "Keyboard navigation: skip-to-main link first on every page, Tab order follows DOM order, focus-visible rings always rendered (2px gilt ring + 2px ink offset, never outline:none without replacement)",
+    "Headings: one h1 per route, h2 for sections, h3 for cards, no level skips",
+    "Page titles follow '<Surface> — Buyer 001 Dossier' for scannable browser history",
+    "R3F canvas marked aria-hidden=true; the hero's narrative meaning is conveyed by surrounding text — the 3D is atmosphere",
+    "Rive gauges include sr-only text with the numeric value and state name (e.g., 'Fit score: 62 of 100 — negotiable')",
+    "Lottie containers marked aria-hidden=true; meaning is in surrounding copy",
+    "visx charts in /comparison include sr-only data tables mirroring scatter data (same a11y pattern dashboard used for Recharts)",
+    "Color contrast verified at AA minimum for all foreground/background pairs; documented in palette.contrast_table",
+    "Light/dark mode toggle is keyboard-reachable, announces state via aria-pressed, respects system preference on first load",
+    "Reading mode (light) defaults to system; user choice persisted to localStorage with no-flash inline script in <head>",
+    "Forms / inputs: none in v1 (read-only dossier). When added in v2, follow ui-ux-pro-max forms rules (label association, error text via aria-describedby, autocomplete tokens)",
+    "Charts (visx): every scatter point keyboard-focusable, tooltips reachable via Tab + Enter, sr-only data table provides parity"
+  ],
+  "system_integrity_moments": [
+    "the-three-truths surface opens with 'Three listings. Zero clean wins.' — sets honesty as the framing before any deal is presented",
+    "/deals/l004 (Flagged) shows the broker-pattern discovery in the portfolio itself — the system surfaces what it filtered out, not just what survived",
+    "/system appendix lays out the L007/L008 retractions and broker-pattern hardening with dates and outcomes — the negative results are part of the product"
+  ],
+  "build_sequence_for_portfolio_designer": [
+    "1. Scaffold apps/portfolio/ (Next.js 15 App Router, TypeScript strict, Tailwind). Mirror dashboard's hand-rolled-on-Radix posture; do not install shadcn.",
+    "2. Token layer: globals.css with the 7 palette CSS variables + dark/light flip + type-scale rem tokens.",
+    "3. Typography: next/font/google for Fraunces + Inter Tight + JetBrains Mono, latin-only subset, Fraunces variable axes enabled.",
+    "4. Vault read layer: server-only utilities to parse the 3 listing files + 3 assessment files + 3 DD/memo files + buyer profile + search rubric. Typed against SCHEMAS.md.",
+    "5. Primitives: Button, Card, Accordion (Radix), FocusRing, ReadingModeToggle, ReducedMotionProvider, ScrollLink.",
+    "6. Status atoms: ScoreBadge, HardGateBadge, ConfidenceMeter (these are visually distinct from the dashboard's — different palette, different typography, same a11y contract).",
+    "7. Build /hero LAST (R3F + GSAP timeline) — build with static PNG fallback first, layer R3F on top.",
+    "8. Build /thesis — typography-driven, no motion library needed yet.",
+    "9. Build /findings (the-three-truths) — first surface that mounts Rive. Ship with static SVG fallback; swap in Rive once .riv files exist.",
+    "10. Build /deals/[id] for L002, L003, L004 in that order. Shared-element transition from /findings card.",
+    "11. Build /comparison — visx scatter + GSAP ScrollTrigger pin. Second and final GSAP use.",
+    "12. Build /next-steps — pure typography + Motion hover.",
+    "13. Build /system — Motion stagger timeline of events.",
+    "14. Build /appendix — accordion + dotLottie chevron + sr-only data tables for DD claims.",
+    "15. Build /hero — R3F scene (last; can ship with static PNG and add 3D iteratively).",
+    "16. A11y pass: keyboard walkthrough every surface, axe-core CI, screen-reader pass on /findings + /deals/[id] + /comparison + /appendix.",
+    "17. Reduced-motion pass: flip OS setting, walk every surface. R3F replaced by PNG. GSAP snaps. Lottie replaced by SVG.",
+    "18. Performance pass: Lighthouse on every route. Target: Performance ≥ 90 on /thesis, /findings, /next-steps, /system, /appendix. Performance ≥ 75 on /hero, /comparison, /deals/[id] (R3F and GSAP-pin surfaces have a budget hit; documented and intentional).",
+    "19. GATE 5 checklist: every surface has prefers-reduced-motion fallback, no decorative loops, no scroll-jacking, all 3 deals render from vault data (no hardcoded numbers), R3F lazy-loaded (verified in network panel), shared-element transitions work both directions."
+  ],
+  "open_questions_for_orchestrator": [
+    "Should /comparison include a fourth deal-slot for 'placeholder — a future fit lives here'? Argues for: forward-looking narrative, sets reader expectation. Argues against: dilutes the honesty of 'three listings, zero clean wins'.",
+    "Reading mode default: dark-first (paper-on-ink, dramatic) or light-first (paper-on-bone, classical)? Recommendation: dark-first to differentiate from dashboard's neutral-slate light-first.",
+    "Does the buyer want a printable/PDF export of the dossier? Editorial layout makes print plausible. Recommendation: defer to v2; the surface is web-first.",
+    "Where does the Rive editing happen — portfolio-designer authors .riv files via Rive's web editor (free tier), or does the human want to author them? Recommendation: portfolio-designer authors, human reviews before commit.",
+    "Confirm that /portfolio is reachable from the dashboard's GlobalNav (the dashboard plan stubs an external link). Should the link open in a new tab or same tab? Recommendation: new tab — the dossier is a 'destination', not a sub-page.",
+    "Skill availability: ui-ux-pro-max CLI is broken (RN-biased + symlinks); SKILL.md was used as static reference. Confirm orchestrator is OK with that pre-flight call before portfolio-designer starts."
+  ]
+}
