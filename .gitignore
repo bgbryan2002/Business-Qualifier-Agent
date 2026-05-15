@@ -39,6 +39,10 @@ Thumbs.db
 # Playwright MCP plugin per-session snapshots + console logs
 .playwright-mcp/
 
+# Per-machine skill installations (re-install via `npx skills add ...`)
+.agents/
+.claude/skills/
+
 # Test / coverage
 coverage/
 .nyc_output/

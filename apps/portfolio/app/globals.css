@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/*
+ * Portfolio v1 — Editorial Dossier
+ *
+ * Tokens are CSS variables; Tailwind 4 maps them through @theme inline.
+ * Dark-first by default (paper-on-ink). The .reading-light class flips
+ * to bone-on-ink. The two are mutually exclusive — see ReadingModeProvider.
+ *
+ * Palette: ink, bone, verdant, moss, gilt, rust, vellum.
+ * Contrast pairs documented in obsidian-vault/06-Portfolio/drafts/portfolio-plan-v1.md.
+ */
+
+:root {
+  /* Raw palette (always available, regardless of mode) */
+  --ink: #0E1410;
+  --bone: #F4EFE6;
+  --verdant: #1F3D2E;
+  --moss: #7BA68A;
+  --gilt: #C7A24C;
+  --rust: #A24E2B;
+  --vellum: #D9D1C0;
+
+  /* Semantic — DARK MODE (default) */
+  --bg: var(--ink);
+  --bg-elevated: #141A16;
+  --fg: var(--bone);
+  --fg-muted: var(--vellum);
+  --fg-quiet: #8E8676;
+  --surface: var(--verdant);
+  --surface-ink: #19211C;
+  --rule: #2A332D;
+  --accent: var(--gilt);
+  --accent-fg: var(--ink);
+  --positive: var(--moss);
+  --warn: #C9A66B;
+  --danger: var(--rust);
+
+  /* Type tokens (modular scale, rem) */
+  --t-display: 6rem;
+  --t-h1: 3.5rem;
+  --t-h2: 2.25rem;
+  --t-h3: 1.5rem;
+  --t-lead: 1.375rem;
+  --t-body: 1.0625rem;
+  --t-caption: 0.875rem;
+
+  --lh-display: 0.95;
+  --lh-h1: 1.05;
+  --lh-h2: 1.15;
+  --lh-h3: 1.25;
+  --lh-lead: 1.5;
+  --lh-body: 1.65;
+  --lh-caption: 1.4;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+/* Reading mode: LIGHT (paper-on-ink → ink-on-bone). User-toggle, persisted to localStorage. */
+.reading-light {
+  --bg: var(--bone);
+  --bg-elevated: #ECE5D6;
+  --fg: var(--ink);
+  --fg-muted: #2E3530;
+  --fg-quiet: #5E5747;
+  --surface: var(--bone);
+  --surface-ink: #ECE5D6;
+  --rule: var(--vellum);
+  --accent: #8C6F26; /* darker gilt for AA on bone */
+  --accent-fg: var(--bone);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-quiet: var(--fg-quiet);
+  --color-surface: var(--surface);
+  --color-surface-ink: var(--surface-ink);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-positive: var(--positive);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-ink: var(--ink);
+  --color-bone: var(--bone);
+  --color-verdant: var(--verdant);
+  --color-moss: var(--moss);
+  --color-gilt: var(--gilt);
+  --color-rust: var(--rust);
+  --color-vellum: var(--vellum);
+
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--rule);
+  }
+  html {
+    color-scheme: dark;
+    text-rendering: optimizeLegibility;
+  }
+  html.reading-light {
+    color-scheme: light;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01" 1, "cv11" 1;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Display / heading defaults — Fraunces */
+  .t-display {
+    font-family: var(--font-serif);
+    font-size: clamp(3.25rem, 10vw, var(--t-display));
+    line-height: var(--lh-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144, "SOFT" 25, "WONK" 1;
+  }
+  .t-h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 6vw, var(--t-h1));
+    line-height: var(--lh-h1);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  .t-h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, var(--t-h2));
+    line-height: var(--lh-h2);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .t-h3 {
+    font-family: var(--font-serif);
+    font-size: var(--t-h3);
+    line-height: var(--lh-h3);
+    font-weight: 500;
+  }
+  .t-lead {
+    font-size: var(--t-lead);
+    line-height: var(--lh-lead);
+    font-weight: 400;
+    color: var(--fg);
+  }
+  .t-body {
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+  }
+  .t-caption {
+    font-size: var(--t-caption);
+    line-height: var(--lh-caption);
+    font-weight: 500;
+    color: var(--fg-muted);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Mono tabular numerics */
+  .tnum {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: -0.01em;
+  }
+
+  /* Focus: 2px gilt ring with ink offset (or bone in light mode) */
+  :focus-visible {
+    outline: 2px solid var(--gilt);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--gilt);
+    color: var(--ink);
+  }
+}
+
+@layer utilities {
+  .rule-horizontal {
+    background: var(--rule);
+    height: 1px;
+    width: 100%;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  /* Editorial column max-width */
+  .prose-col {
+    max-width: 62ch;
+  }
+}
+
+/* prefers-reduced-motion — global clamp; component-level fallbacks handle R3F/Lottie swap */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+}
