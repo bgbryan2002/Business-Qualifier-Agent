@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "_comment_": "Hooks for the SMB Acquisition Intelligence Platform. See obsidian-vault/00-Claude-Control/OPERATING-RULES.md for the contract.",
   "hooks": {
     "SessionStart": [

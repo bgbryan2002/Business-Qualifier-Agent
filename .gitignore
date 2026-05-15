@@ -40,7 +40,6 @@ Thumbs.db
 coverage/
 .nyc_output/
 
-# Obsidian local cache (the vault content IS committed; only Obsidian's per-machine workspace state is excluded)
-obsidian-vault/.obsidian/workspace*
-obsidian-vault/.obsidian/cache
+# Obsidian per-machine workspace state (never commit; each machine configures Obsidian its own way)
+obsidian-vault/.obsidian/
 obsidian-vault/.trash/
