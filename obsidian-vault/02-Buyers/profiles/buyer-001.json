@@ -1,0 +1,71 @@
+{
+  "id": "buyer-001",
+  "as_of_date": "2026-05-14",
+  "capital": {
+    "liquid_usd": 22000,
+    "borrowing_capacity_usd": 450000,
+    "target_owner_profit_usd": 140000,
+    "sba_eligibility": "likely"
+  },
+  "operator_profile": {
+    "hours_per_week_available": 12,
+    "involvement_level": "semi-absentee",
+    "skills": [
+      "financial modeling",
+      "excel",
+      "project management",
+      "client communication",
+      "consulting / advisory",
+      "powerpoint",
+      "data analysis (light sql / python)"
+    ],
+    "industries_lived": [
+      "consulting",
+      "corporate-services"
+    ]
+  },
+  "geography": {
+    "home_metro": "Atlanta, GA",
+    "willing_to_relocate": false,
+    "max_commute_minutes": 45,
+    "preferred_states": ["GA", "TN", "AL", "SC"]
+  },
+  "industry_preferences": {
+    "must_have": [
+      "absentee-friendly or strong manager-in-place",
+      "recurring revenue",
+      "owner not the sole salesperson",
+      "documented SOPs"
+    ],
+    "must_avoid": [
+      "food service / restaurants",
+      "HVAC / electrical / plumbing / trade-license-required businesses",
+      "owner-operator model",
+      "single concentrated customer (>40%)"
+    ],
+    "open_to": [
+      "laundromats",
+      "self-storage",
+      "car washes",
+      "vending routes",
+      "small B2B SaaS (~$200k-500k ARR)",
+      "FBA e-commerce (~$300k-600k revenue)",
+      "niche service businesses with manager-in-place"
+    ],
+    "license_willingness": "any"
+  },
+  "deal_constraints": {
+    "min_revenue_usd": 250000,
+    "max_purchase_price": 550000,
+    "max_payback_years": 4,
+    "min_seller_financing": 0.15,
+    "deal_breakers": [
+      "pending litigation",
+      "owner is the only person who knows operations or holds key relationships",
+      "trade license buyer cannot transfer or earn within 6 months",
+      "more than 25 hrs/wk required owner attention",
+      "single customer concentration > 40%"
+    ]
+  },
+  "scoring_weights_override": {}
+}

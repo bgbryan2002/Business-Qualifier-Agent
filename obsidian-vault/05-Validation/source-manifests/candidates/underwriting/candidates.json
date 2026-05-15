@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "numpy-financial",
+    "category": "underwriting",
+    "source_url": "https://pypi.org/project/numpy-financial/",
+    "source_repo": "numpy/numpy-financial",
+    "license": "BSD-3-Clause",
+    "checksum_sha256": null,
+    "confidence": 0.92,
+    "validator_notes": "Canonical NumPy-governed library replacing deprecated numpy financial functions. Implements pv, fv, pmt, nper, rate, irr, npv, mirr — the primitives needed to compute SBA 7(a) payment schedules and DSCR from NOI. BSD-3-Clause confirmed at github.com/numpy/numpy-financial (API + web). 401 stars, pushed 2025-05-20, actively maintained. PyPI v1.0.0 stable."
+  },
+  {
+    "slug": "mortgagemath",
+    "category": "underwriting",
+    "source_url": "https://github.com/murraystokely/mortgagemath",
+    "source_repo": "murraystokely/mortgagemath",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.74,
+    "validator_notes": "Cent-accurate amortization schedules for Python, validated against CFPB and Fannie Mae. Supports fixed-rate, commercial (Actual/360 with balloon), and ARMs. Directly applicable to SBA 7(a) / 504 loan payment modeling. MIT license in repo. Low star count (3) but narrow, well-documented scope; last pushed 2026-05-08. Repo is not a fork. Note: no PyPI package yet — install from source."
+  },
+  {
+    "slug": "qwed-finance",
+    "category": "underwriting",
+    "source_url": "https://github.com/QWED-AI/qwed-finance",
+    "source_repo": "QWED-AI/qwed-finance",
+    "license": "Apache-2.0",
+    "checksum_sha256": null,
+    "confidence": 0.65,
+    "validator_notes": "Deterministic verification middleware for financial calculations using SymPy symbolic math. Covers NPV, IRR, loan amortization, and risk metrics (VaR, Beta, Sharpe). Useful as a correctness layer wrapping DSCR/SDE computations. Apache-2.0 confirmed via GitHub. v2.1.0 released 2026-05-02, 89 commits. Low star count (2); org account unclear lineage — validator should confirm org provenance and that Apache-2.0 LICENSE file is present and complete."
+  },
+  {
+    "slug": "sba-7a-foia-public-data",
+    "category": "underwriting",
+    "source_url": "https://data.sba.gov/dataset/7-a-504-foia",
+    "source_repo": null,
+    "license": "n/a-public-record",
+    "checksum_sha256": null,
+    "confidence": 0.82,
+    "validator_notes": "Official U.S. Small Business Administration FOIA dataset of all 7(a) and 504 loan approvals, including loan amounts, NAICS codes, approval dates, default/charge-off status. Published by a federal agency (SBA), therefore public domain / U.S. government works (17 U.S.C. § 105). Data.gov catalog record mirrors the dataset. Useful as an industry benchmark: approval rates, typical loan sizes, default rates by NAICS. Validator should confirm direct CSV download URL and as_of_date of latest release. NOTE: data.sba.gov returned 403 in this session (host-allowlist block); URL confirmed via data.gov catalog references and SBA.gov open-data documentation."
+  }
+]

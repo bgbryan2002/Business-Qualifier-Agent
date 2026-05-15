@@ -1,0 +1,18 @@
+{
+  "_comment_": "First-run dynamic spawn config. Tells the local Claude Code CLI which subagents to register on session start. Each entry maps a name to its definition file.",
+  "agents": {
+    "orchestrator":              { "definition": "./.claude/agents/orchestrator.md",              "default": true },
+    "buyer-profiler":            { "definition": "./.claude/agents/buyer-profiler.md" },
+    "repo-discovery":            { "definition": "./.claude/agents/repo-discovery.md" },
+    "repo-validator":            { "definition": "./.claude/agents/repo-validator.md" },
+    "due-diligence-researcher":  { "definition": "./.claude/agents/due-diligence-researcher.md" },
+    "acquisition-analyst":       { "definition": "./.claude/agents/acquisition-analyst.md" },
+    "legal-entity-analyst":      { "definition": "./.claude/agents/legal-entity-analyst.md" },
+    "ui-ux-architect":           { "definition": "./.claude/agents/ui-ux-architect.md" },
+    "dashboard-builder":         { "definition": "./.claude/agents/dashboard-builder.md" },
+    "portfolio-designer":        { "definition": "./.claude/agents/portfolio-designer.md" },
+    "vault-librarian":           { "definition": "./.claude/agents/vault-librarian.md" }
+  },
+  "default_agent": "orchestrator",
+  "_invocation_hint_": "Local: `claude --agent orchestrator` (after `cc` alias) or just `cc` then ask orchestrator-style questions."
+}

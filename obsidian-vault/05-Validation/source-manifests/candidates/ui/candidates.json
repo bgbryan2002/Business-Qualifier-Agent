@@ -1,0 +1,52 @@
+[
+  {
+    "slug": "shadcn-ui",
+    "category": "ui",
+    "source_url": "https://ui.shadcn.com",
+    "source_repo": "shadcn-ui/ui",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.97,
+    "validator_notes": "MIT license verified at github.com/shadcn-ui/ui/blob/main/LICENSE.md. 114k stars, v4.7.0 released 2026-05-05. Copy-paste component model with Radix primitives + Tailwind; ideal for App Router + TypeScript. Canonical repo, active maintainership, no forks needed."
+  },
+  {
+    "slug": "radix-ui-primitives",
+    "category": "ui",
+    "source_url": "https://www.radix-ui.com/primitives",
+    "source_repo": "radix-ui/primitives",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.96,
+    "validator_notes": "MIT license verified at github.com/radix-ui/primitives/blob/main/LICENSE (copyright WorkOS 2022). Unstyled, accessible primitives underpinning shadcn/ui. Canonical upstream; stable release cadence. OSI-approved."
+  },
+  {
+    "slug": "tailwindcss",
+    "category": "ui",
+    "source_url": "https://tailwindcss.com/docs",
+    "source_repo": "tailwindlabs/tailwindcss",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.99,
+    "validator_notes": "MIT license verified at github.com/tailwindlabs/tailwindcss/blob/master/LICENSE (Tailwind Labs, Inc.). v4.x actively maintained by original authors. Required baseline for both dashboard and portfolio apps. Also covers @tailwindcss/typography plugin (MIT, github.com/tailwindlabs/tailwindcss-typography/blob/master/LICENSE)."
+  },
+  {
+    "slug": "recharts",
+    "category": "ui",
+    "source_url": "https://recharts.org/en-US",
+    "source_repo": "recharts/recharts",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.91,
+    "validator_notes": "MIT license verified at github.com/recharts/recharts/blob/master/LICENSE. 27.1k stars, v3.8.1 released 2026-03-25, 4,669 commits on main. React-native D3 charting library; well-suited for SDE/revenue trend charts in the dashboard. Actively maintained."
+  },
+  {
+    "slug": "lucide-react",
+    "category": "ui",
+    "source_url": "https://lucide.dev",
+    "source_repo": "lucide-icons/lucide",
+    "license": "ISC",
+    "checksum_sha256": null,
+    "confidence": 0.93,
+    "validator_notes": "ISC license verified at github.com/lucide-icons/lucide/blob/main/LICENSE. ISC is OSI-approved and functionally equivalent to MIT. Feather-derived icons carry MIT. Official React package is lucide-react on npm (canonical). Default icon set for shadcn/ui — highly coherent pairing."
+  }
+]

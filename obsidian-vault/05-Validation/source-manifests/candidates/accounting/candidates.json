@@ -1,0 +1,53 @@
+[
+  {
+    "slug": "beancount",
+    "category": "accounting",
+    "source_url": "https://pypi.org/project/beancount/",
+    "source_repo": "beancount/beancount",
+    "license": "GPL-2.0-only",
+    "checksum_sha256": null,
+    "confidence": 0.88,
+    "validator_notes": "Canonical double-entry bookkeeping system in plain text; actively maintained (v3.2.3 released May 2026, 6415 commits); GPL-2.0 confirmed on GitHub and PyPI; strong provenance for parsing P&L and balance sheet records into structured data."
+  },
+  {
+    "slug": "hledger",
+    "category": "accounting",
+    "source_url": "https://github.com/simonmichael/hledger",
+    "source_repo": "simonmichael/hledger",
+    "license": "GPL-3.0-or-later",
+    "checksum_sha256": null,
+    "confidence": 0.85,
+    "validator_notes": "Plain-text double-entry accounting CLI and library; actively maintained (v1.52.1 April 2026); GPL-3.0+ confirmed; useful for SDE normalization via journal parsing and report generation from SMB financial records."
+  },
+  {
+    "slug": "gnucash",
+    "category": "accounting",
+    "source_url": "https://github.com/GnuCash/gnucash",
+    "source_repo": "GnuCash/gnucash",
+    "license": "GPL-2.0-or-later",
+    "checksum_sha256": null,
+    "confidence": 0.82,
+    "validator_notes": "Canonical OSS small-business double-entry accounting application (v5.15 March 2026, 74 releases); GPL-2.0-or-later confirmed; exposes Python bindings and XML/SQLite data formats suitable for read-only ingestion of SMB books."
+  },
+  {
+    "slug": "erpnext",
+    "category": "accounting",
+    "source_url": "https://github.com/frappe/erpnext",
+    "source_repo": "frappe/erpnext",
+    "license": "GPL-3.0-or-later",
+    "checksum_sha256": null,
+    "confidence": 0.80,
+    "validator_notes": "Canonical open-source ERP with a full accounting module (general ledger, P&L, balance sheet, cash flow); actively maintained (v16.18.3 May 2026, 57932 commits); GPL-3.0+ confirmed; API-accessible for read-only ingestion of SMB chart-of-accounts and financial statements."
+  },
+  {
+    "slug": "ofxtools",
+    "category": "accounting",
+    "source_url": "https://github.com/csingley/ofxtools",
+    "source_repo": "csingley/ofxtools",
+    "license": "GPL-3.0",
+    "checksum_sha256": null,
+    "confidence": 0.68,
+    "validator_notes": "Python library for consuming OFXv1/v2 bank and brokerage feeds; 1004 commits, GPL-3.0 confirmed on PyPI; last PyPI release v0.9.5 (Jan 2022) is a moderate staleness flag but CI still active on GitHub; useful for ingesting SMB bank statement exports as part of add-back identification workflows.",
+    "rejected_reason": null
+  }
+]

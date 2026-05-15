@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "motion",
+    "category": "animation",
+    "source_url": "https://motion.dev",
+    "source_repo": "framer/motion",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.97,
+    "validator_notes": "Canonical repo at github.com/framer/motion. MIT license verified. npm package is 'motion' (import from 'motion/react' for React). 31.9k stars, actively maintained, 1,326 tags. Formerly Framer Motion; renamed to Motion with v11. Default animation layer for the portfolio."
+  },
+  {
+    "slug": "gsap",
+    "category": "animation",
+    "source_url": "https://gsap.com",
+    "source_repo": "greensock/GSAP",
+    "license": "GreenSock-No-Charge",
+    "checksum_sha256": null,
+    "confidence": 0.91,
+    "validator_notes": "Canonical repo at github.com/greensock/GSAP. npm package is 'gsap' v3.15.0. License is GreenSock Standard 'No Charge' license (https://gsap.com/standard-license) — NOT OSI-approved. Free for nearly all uses including commercial projects as of 2023 Webflow partnership; all formerly premium plugins (ScrollTrigger, SplitText, etc.) are now free. License string in npm registry: \"Standard 'no charge' license: https://gsap.com/standard-license.\" Validator must re-confirm acceptable use for portfolio before ingestion. 24.7k stars, 188 commits, 117 releases."
+  },
+  {
+    "slug": "react-three-fiber",
+    "category": "animation",
+    "source_url": "https://docs.pmnd.rs/react-three-fiber",
+    "source_repo": "pmndrs/react-three-fiber",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.96,
+    "validator_notes": "Canonical repo at github.com/pmndrs/react-three-fiber. npm package is '@react-three/fiber'. MIT license. v9.6.1 released April 28, 2026. 30.8k stars, 2,849 commits, 133 releases. React renderer for Three.js — intended for the one intentional 3D scene in apps/portfolio/."
+  },
+  {
+    "slug": "drei",
+    "category": "animation",
+    "source_url": "https://pmndrs.github.io/drei",
+    "source_repo": "pmndrs/drei",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.96,
+    "validator_notes": "Canonical repo at github.com/pmndrs/drei. npm package is '@react-three/drei'. MIT license. v10.7.7 as of November 2025. 9.6k stars, 897 releases. Companion helper/abstraction library for @react-three/fiber. Required alongside react-three-fiber for productive 3D scene composition."
+  },
+  {
+    "slug": "rive-react",
+    "category": "animation",
+    "source_url": "https://rive.app/docs/runtimes/react",
+    "source_repo": "rive-app/rive-react",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.93,
+    "validator_notes": "Canonical repo at github.com/rive-app/rive-react. npm package is '@rive-app/react-canvas'. MIT license. 1.1k stars, 624 commits. React wrapper around the Rive JS/Wasm runtime. Supports React 16.8 through 19. Intended for state-driven micro-interactions (risk meters, fit gauges). Official docs at rive.app/docs/runtimes/react."
+  },
+  {
+    "slug": "dotlottie-react",
+    "category": "animation",
+    "source_url": "https://developers.lottiefiles.com/docs/dotlottie-react/",
+    "source_repo": "LottieFiles/dotlottie-web",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.92,
+    "validator_notes": "Canonical monorepo at github.com/LottieFiles/dotlottie-web. npm package is '@lottiefiles/dotlottie-react'. MIT license. Most recent release @lottiefiles/dotlottie-vue@0.11.13 on May 8, 2026, indicating active monorepo maintenance. 475 commits. Intended for empty/loading states and section transitions in apps/portfolio/."
+  },
+  {
+    "slug": "lenis",
+    "category": "animation",
+    "source_url": "https://lenis.darkroom.engineering",
+    "source_repo": "darkroomengineering/lenis",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.88,
+    "validator_notes": "Canonical repo at github.com/darkroomengineering/lenis. npm package is 'lenis'. MIT license. v1.3.23 released April 15, 2026. 13.9k stars, 1,054 commits. Lightweight smooth-scroll library with React/Vue support. Optional inclusion for portfolio scroll choreography. darkroom.engineering is the authoritative maintainer."
+  }
+]
