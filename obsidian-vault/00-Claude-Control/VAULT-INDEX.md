@@ -49,11 +49,11 @@ Refreshed by `vault-librarian` on each write. Initial values are zero or scaffol
 
 | Section | Notes | Validated sources |
 |---|---|---|
-| 00-Claude-Control | 8 | n/a |
-| 01-Skills | 6 (Tier 1 plugins, documented) | 6 |
-| 02-Buyers | 0 | 0 |
-| 03-Deals | 0 | 0 |
-| 04-Dashboard | 0 | 0 |
-| 05-Validation | 0 | 0 |
-| 06-Portfolio | 0 | 0 |
-| 99-Human | 1 (README) | n/a |
+| 00-Claude-Control | 8 |  n/a  |
+| 01-Skills | 36 |  32  |
+| 02-Buyers | 2 |  0  |
+| 03-Deals | 0 |  0  |
+| 04-Dashboard | 0 |  0  |
+| 05-Validation | 0 |  0  |
+| 06-Portfolio | 0 |  0  |
+| 99-Human | 1 |  n/a  |
