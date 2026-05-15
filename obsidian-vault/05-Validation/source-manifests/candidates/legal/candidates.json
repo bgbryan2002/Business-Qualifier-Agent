@@ -1,0 +1,52 @@
+[
+  {
+    "slug": "seriesseed-equity",
+    "category": "legal",
+    "source_url": "https://github.com/seriesseed/equity",
+    "source_repo": "seriesseed/equity",
+    "license": "CC0-1.0",
+    "checksum_sha256": null,
+    "confidence": 0.82,
+    "validator_notes": "CC0 public-domain templates for seed financing (stock purchase, restated cert of incorporation, term sheet) authored with Fenwick & West; 13 commits, canonical and widely cited but last commit activity not confirmed recent — repo-validator should verify commit recency."
+  },
+  {
+    "slug": "docassemble",
+    "category": "legal",
+    "source_url": "https://docassemble.org",
+    "source_repo": "jhpyle/docassemble",
+    "license": "MIT",
+    "checksum_sha256": null,
+    "confidence": 0.91,
+    "validator_notes": "MIT-licensed expert system for guided legal interviews and document assembly; actively maintained (4,591 commits, 896 releases, recent activity), purpose-built for interview-based form generation relevant to entity formation and acquisition document workflows."
+  },
+  {
+    "slug": "sba-sop-50-10",
+    "category": "legal",
+    "source_url": "https://www.sba.gov/document/support-sba-standard-operating-procedure-sop-50-10",
+    "source_repo": null,
+    "license": "n/a-public-record",
+    "checksum_sha256": null,
+    "confidence": 0.88,
+    "validator_notes": "Official SBA SOP 50 10 governs 7(a) and 504 loan program underwriting rules; U.S. government public-domain publication critical for SBA acquisition financing eligibility assessment; direct fetch returned 403 (CDN block) but canonical SBA.gov domain is verified official."
+  },
+  {
+    "slug": "irs-pub-544",
+    "category": "legal",
+    "source_url": "https://www.irs.gov/publications/p544",
+    "source_repo": null,
+    "license": "n/a-public-record",
+    "checksum_sha256": null,
+    "confidence": 0.85,
+    "validator_notes": "Official IRS Publication 544 (Sales and Other Dispositions of Assets) covers IRC §1060 asset-sale allocation rules directly applicable to asset purchase agreement tax structuring; U.S. government public domain; direct fetch returned 403 (CDN block) but irs.gov is verified official domain."
+  },
+  {
+    "slug": "irs-pub-535",
+    "category": "legal",
+    "source_url": "https://www.irs.gov/publications/p535",
+    "source_repo": null,
+    "license": "n/a-public-record",
+    "checksum_sha256": null,
+    "confidence": 0.84,
+    "validator_notes": "Official IRS Publication 535 (Business Expenses) covers deductibility rules for acquired business costs and amortization of §197 intangibles; U.S. government public domain; direct fetch returned 403 (CDN block) but irs.gov is verified official domain."
+  }
+]
