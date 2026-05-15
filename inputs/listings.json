@@ -64,7 +64,8 @@
     "assessment_score": 58,
     "confidence": 0.55,
     "hard_gates_status": "all_pass_or_unknown",
-    "status": "memo_drafted_request_nda",
+    "status": "rejected_geography_fail",
+    "user_decision": "pass (2026-05-15)",
     "fetched_at": "2026-05-15"
   },
   {

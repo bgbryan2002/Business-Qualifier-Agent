@@ -13,8 +13,8 @@ citation:
   - L004-dd
 as_of_date: 2026-05-15
 validator_id: due-diligence-researcher
-status: draft
-tags: [assessment, draft, phase-3, L004, top-5-candidate]
+status: rejected
+tags: [assessment, phase-3, L004, rejected-geography-fail]
 ---
 
 # Deal Assessment — L004 (Gasket Replacement, Savannah GA)
@@ -65,3 +65,9 @@ tags: [assessment, draft, phase-3, L004, top-5-candidate]
 - **industry_fit (70)**: B2B recurring maintenance fits the model well; not trade-licensed; not food service
 - **deal_structure_fit (40)**: No seller financing disclosed; price anomaly raises structure uncertainty; SBA eligibility unclear at this listing stage
 - **diligence_risk (35)**: Very high uncertainty — price anomaly, missing CF breakdown, no broker identity
+
+## User decision (2026-05-15) — PASS
+
+Buyer-001 passed on this listing post-GATE 3 review. Primary reason: **geography**. Savannah is 4 hours from Atlanta, and the 12-hr/wk semi-absentee operator profile cannot reliably manage a remote business from day one. The price anomaly was interesting, but not interesting enough to overcome the geography gap given the buyer's operator constraints.
+
+`status: rejected`. `reason: geography-fail`. Not pursued.

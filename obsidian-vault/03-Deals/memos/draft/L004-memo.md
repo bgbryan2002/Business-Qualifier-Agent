@@ -14,8 +14,8 @@ citation:
   - L004-dd
 as_of_date: 2026-05-15
 validator_id: due-diligence-researcher
-status: draft
-tags: [memo, draft, phase-3, L004, top-5, price-anomaly-investigation]
+status: rejected
+tags: [memo, phase-3, L004, rejected-geography-fail, price-anomaly-investigation]
 ---
 
 # Acquisition Memo — L004
@@ -43,4 +43,8 @@ A Savannah-based B2B route service business — commercial refrigeration gasket 
 
 ### Recommended Next Step
 
-**REQUEST-NDA** — immediately. The price anomaly requires direct seller conversation. NDA → ask for SDE worksheet and top-client breakdown. If the financials are defensible and the reason for low price is health/timeline rather than undisclosed liability, escalate to LOI. The upside here is asymmetric: worst case it's a pass; best case it's the highest-returning deal available.
+**PASS** (user decision, 2026-05-15).
+
+The original recommendation was REQUEST-NDA on the basis that the 1.07× SDE multiple was unusually attractive and worth one seller conversation. Buyer-001 passed at GATE 3 review citing geography: Savannah is 4 hours from Atlanta, and the 12-hr/wk semi-absentee profile cannot reliably operate a remote business without a credible local manager already in place. The price anomaly was not strong enough to override the operator-fit constraint.
+
+Listing closed out as `status: rejected`, reason `geography-fail`. No NDA requested. Not pursued further.
