@@ -96,3 +96,18 @@ Human-authored notes live in `99-Human/` or carry `#human-authored` in their tag
 - Commits use the format: `[<phase>] <agent>: <action>` (e.g. `[Phase 0] vault-librarian: scaffold control files`).
 - Every `[GATE]` checkpoint pushes first, then prints the gate message with the latest commit SHA and the GitHub URL.
 - Before announcing any gate as complete, run `git status` (clean tree) and `git log -1` (latest commit is what you expect).
+
+## 7. Skill / subagent invocation pre-flight (added 2026-05-15)
+
+Before invoking any skill or spawning any agent that includes shell execution or file-write tools, the orchestrator must perform a four-step pre-flight check:
+
+1. **Read** the skill's `SKILL.md` or the agent's definition file in full
+2. **Inventory** operations: read paths, write paths, shell command usage, network access
+3. **Report** any installation issues (broken symlinks, missing deps, partial installs) or scope mismatches (e.g. a mobile-biased skill being asked to drive web work)
+4. **Propose** a constrained invocation that fits the current project's actual needs
+
+The skill / agent is not invoked until the human approves the constrained scope. Single-shot human approval can pre-authorize a chained sequence (e.g. "architect → builder, no check-in between") — when that happens, the pre-flight READ step still occurs (so the orchestrator briefs the next agent correctly), but the approval gate is satisfied by the prior authorization.
+
+Read-only-tool agents (`Read`, `Glob`, `Grep` only) are exempt — low blast radius.
+
+**Origin:** ui-ux-pro-max skill investigation, 2026-05-15. Pre-flight discovered broken symlinks + React-Native bias before invocation, letting the user approve a constrained "read SKILL.md as static reference only" scope instead of running a broken + mismatched tool.

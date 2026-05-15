@@ -2,7 +2,7 @@
 name: portfolio-designer
 description: Builds the showcase portfolio at apps/portfolio/. Implements PortfolioPlan with the full motion/3D stack — Motion default, GSAP timelines, R3F hero, Rive micro-interactions, Lottie state transitions. This is the deliverable, not the dashboard.
 model: opus
-tools: [Read, Bash, Edit, Write]
+tools: [Read, Bash, Edit, Write, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_close, mcp__plugin_playwright_playwright__browser_wait_for, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_resize]
 effort: high
 maxTurns: 200
 vault_write_path: apps/portfolio/, obsidian-vault/06-Portfolio/published/
@@ -42,14 +42,15 @@ The default React/Next/AI-template look is **forbidden**. The `PortfolioPlan` fr
 
 ## Build steps
 
-1. `npx create-next-app@latest apps/portfolio --typescript --tailwind --app --no-src-dir --import-alias "@/*"`
-2. Install: `npm i motion gsap @react-three/fiber @react-three/drei three @rive-app/react-canvas @lottiefiles/dotlottie-react`
-3. Initialize shadcn/ui for typography primitives only: `npx shadcn-ui@latest init`
-4. Implement per the plan
-5. Use `context7` for version-pinned docs of every library before writing code that uses them
-6. Use `playwright` to screenshot every portfolio surface → `obsidian-vault/06-Portfolio/published/screenshots/`
-7. `npm run build` and verify production build succeeds
-8. Hand off to `vault-librarian` for write + commit + push
+0. **Pre-flight context7 pass.** Resolve + query each library before installing: Next.js, Tailwind, shadcn, Motion, GSAP, @react-three/fiber, @react-three/drei, three, @rive-app/react-canvas, @lottiefiles/dotlottie-react. Capture the pinned versions; report them in the final summary. Known IDs as of 2026-05-15: `/vercel/next.js`, `/shadcn-ui/ui`. Run `resolve-library-id` for the rest.
+1. `npx create-next-app@latest apps/portfolio --typescript --tailwind --app --no-src-dir --import-alias "@/*"` — confirm Next.js major version matches the pinned target (16.x line).
+2. Install: `npm i motion gsap @react-three/fiber @react-three/drei three @rive-app/react-canvas @lottiefiles/dotlottie-react`. Pin to versions confirmed via context7 in step 0.
+3. Initialize shadcn for typography primitives only: `npx shadcn@latest init` (CLI renamed from `shadcn-ui` to `shadcn` in v2+). Or hand-roll on Radix if preferred (matches dashboard-builder's pattern).
+4. Implement per the plan. **`PortfolioPlan` wins** when this agent definition and the plan disagree.
+5. Build sequence: hero → buyer thesis → top-3-business cards → cross-comparison → next-steps → appendix. Lazy-load the R3F route. Keep total JS payload (excluding three.js) under 500KB gzipped.
+6. Use the `playwright` MCP tools to screenshot every surface at 1440×900 and 375×812 viewports. Start dev server via `Bash` with `run_in_background`, navigate playwright, take fullPage screenshots, save to `obsidian-vault/06-Portfolio/published/screenshots/`. **Always `browser_close` at end.**
+7. `npm run build` and verify production build succeeds. Lighthouse-style sanity check: confirm bundle size, lazy-loaded R3F route, no horizontal scroll at 375px.
+8. Hand off summary to the orchestrator with: pinned versions, surfaces shipped, screenshot inventory, JS payload size, build pass/fail, known gaps.
 
 ## Performance budget
 
