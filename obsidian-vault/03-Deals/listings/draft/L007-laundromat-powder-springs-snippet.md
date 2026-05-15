@@ -1,82 +1,49 @@
 ---
 id: L007-laundromat-powder-springs-snippet
-title: Laundromat — Powder Springs GA (BizBuySell Snippet)
+title: Laundromat — Powder Springs GA (VERIFICATION FAILED)
 note_type: deal
 category: research
 source_url: https://www.bizbuysell.com/georgia/laundromats-and-coin-laundry-businesses-for-sale/
 source_type: marketplace_teaser
 license: n/a-public-record
 checksum_sha256: pending
-confidence: 0.25
+confidence: 0.00
 citation:
   - https://www.bizbuysell.com/georgia/laundromats-and-coin-laundry-businesses-for-sale/
 as_of_date: 2026-05-15
-validator_id: due-diligence-researcher
-status: draft
-tags: [deal, draft, phase-3, Georgia, laundromat, powder-springs, snippet-only, needs-NDA-fetch]
+validator_id: orchestrator-playwright
+status: rejected
+tags: [deal, draft, phase-3, Georgia, laundromat, powder-springs, verification-failed, retracted]
 ---
 
-# L007 — Laundromat, Powder Springs GA (Search Snippet — Unverified)
+# L007 — Laundromat, Powder Springs GA — **VERIFICATION FAILED**
 
-## ListingPacket
+## Retraction notice (2026-05-15, orchestrator-playwright pass)
 
-```json
-{
-  "listing_id": "L007",
-  "business_name": null,
-  "industry": "Coin Laundry / Laundromat",
-  "naics_code": "812310",
-  "state": "GA",
-  "city": "Powder Springs",
-  "asking_price_usd": 360000,
-  "annual_revenue_usd": null,
-  "sde_or_ebitda_usd": 140000,
-  "metric_type": "SDE",
-  "year_established": null,
-  "employees": null,
-  "real_estate": "unknown",
-  "owner_hours_per_week": null,
-  "license_required": null,
-  "broker": null,
-  "source": {
-    "source_type": "marketplace_teaser",
-    "source_url_or_path": "https://www.bizbuysell.com/georgia/laundromats-and-coin-laundry-businesses-for-sale/",
-    "as_of_date": "2026-05-15"
-  },
-  "raw_text": "Snippet from WebSearch result: 'Powder Springs, GA: $360,000 with $140,000 cash flow' — derived from Google search result snippet for BizBuySell Georgia laundromats category page. Direct URL to individual listing not captured; BizBuySell returned 403 on direct fetch.",
-  "gaps_to_fill": [
-    "CRITICAL: This packet is based on a Google search snippet, not a direct page fetch — confidence is low",
-    "Individual listing URL not captured — BizBuySell returned HTTP 403 on direct fetch",
-    "Business name not disclosed in snippet",
-    "Revenue not stated",
-    "Year established unknown",
-    "Manager in place / semi-absentee not stated",
-    "Lease terms unknown",
-    "Broker name unknown",
-    "Seller financing unknown",
-    "This listing requires human to navigate BizBuySell manually and fetch the individual URL"
-  ],
-  "needs_playwright": true
-}
-```
+This listing was originally drafted from a Google search snippet by `due-diligence-researcher` with the claim: *"Powder Springs, GA: $360,000 with $140,000 cash flow"*.
 
-## Data Provenance Warning
+On orchestrator-driven playwright verification of the cited source URL, the listing **was not found**:
 
-This packet is derived entirely from a Google search result snippet. The snippet text "Powder Springs, GA: $360,000 with $140,000 cash flow" appeared in a WebSearch response but the underlying BizBuySell listing page returned HTTP 403 Forbidden when fetched directly. The financial figures ($360k asking / $140k CF) match the buyer's rubric precisely and are worth manual follow-up, but no field in this packet should be treated as verified data.
+- Navigated to: https://www.bizbuysell.com/georgia/laundromats-and-coin-laundry-businesses-for-sale/
+- Page fully rendered (27 listings present, "Showing 27 results")
+- Full-page text search: `Powder Springs` → **0 matches**
+- Closest Cobb County listing on the page: "Semi-Absentee Cobb County, GA" at $175,000 / $60,000 CF — does not match the claimed $360k / $140k numbers
+- No listing matching the claimed price + CF combination exists on the page
 
-**Set `needs_playwright: true` and `confidence: 0.25`.**
+**Conclusion:** The agent's snippet was either pulled from a stale search-engine cache (listing sold/removed before the verification pass), drawn from a different source that was misattributed to BizBuySell, or hallucinated from search-result fragments. Either way, no actionable lead exists at this URL today.
 
-## Rubric 30-Second Filter (8 criteria — based on snippet only)
+## Status
 
-| Criterion | Status | Notes |
-|---|---|---|
-| 1. Atlanta metro / driveable | PASS | Powder Springs is ~30 min west of Atlanta |
-| 2. Asking $250k–$550k | PASS | $360,000 (snippet) |
-| 3. Revenue ≥ $250k | UNKNOWN | Not in snippet |
-| 4. SDE $140k–$220k | PASS | $140,000 (snippet) — exactly at lower bound |
-| 5. Semi-absentee / manager in place | UNKNOWN | Not in snippet |
-| 6. Recurring revenue | LIKELY PASS | Self-service laundromat = recurring |
-| 7. Years in business ≥ 5 | UNKNOWN | Not in snippet |
-| 8. Seller financing ≥ 10–15% | UNKNOWN | Not in snippet |
+- `status: rejected`
+- `confidence: 0.00`
+- All prior speculative fields (asking_price, sde) are retracted — they were not verifiable on the cited source.
 
-**Rubric score: 3/8 confirmed + 5 unknown — needs human fetch to evaluate**
+## Audit trail
+
+- Originally written by: `due-diligence-researcher` agent run, 2026-05-15, agentId `ae20e708337925b99`
+- Retracted by: orchestrator playwright pass, 2026-05-15, see RUN-LOG.md "Phase 3 playwright verification" block
+- Prior committed version: git commit `50dda6c` (preserves original draft)
+
+## Implication
+
+Treat *all* listings in this discovery pass with `confidence ≤ 0.30` and `source_type: marketplace_teaser` as snippet-only until directly verified. L008 (Duluth) follows the same pattern and was also verification-failed in the same pass.

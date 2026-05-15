@@ -1,61 +1,47 @@
 ---
 id: L007-assessment
-title: Deal Assessment — L007 Laundromat Powder Springs GA (Snippet)
+title: Deal Assessment — L007 (RETRACTED — Verification Failed)
 note_type: deal
 category: underwriting
 source_url: https://www.bizbuysell.com/georgia/laundromats-and-coin-laundry-businesses-for-sale/
 source_type: due_diligence_web
 license: n/a-public-record
 checksum_sha256: pending
-confidence: 0.20
+confidence: 0.00
 citation:
   - L007-laundromat-powder-springs-snippet
   - L007-dd
 as_of_date: 2026-05-15
-validator_id: due-diligence-researcher
-status: draft
-tags: [assessment, draft, phase-3, L007, snippet-only, needs-playwright, top-5-candidate-if-confirmed]
+validator_id: orchestrator-playwright
+status: rejected
+tags: [assessment, draft, phase-3, L007, retracted, verification-failed]
 ---
 
-# Deal Assessment — L007 (Laundromat, Powder Springs GA — Snippet Only)
+# Deal Assessment — L007 — **RETRACTED**
+
+The prior 71/100 score for this listing was speculative — based on an unverified search snippet rather than direct content from the cited source URL.
+
+Playwright verification on 2026-05-15 confirmed the underlying listing **does not exist on the cited BizBuySell GA laundromat page**. The score is therefore retracted in full.
 
 ```json
 {
   "listing_id": "L007",
   "buyer_id": "buyer-001",
-  "score_0_100": 71,
-  "fit_summary": "If the snippet data is accurate ($360k asking / $140k CF / Powder Springs GA), this is the strongest geographic and financial fit in the discovery set. Cobb County laundromat at the exact lower CF bound, 30 minutes from Atlanta. Score reflects potential but all data is unverified — full score contingent on human verification.",
+  "score_0_100": null,
+  "fit_summary": "RETRACTED — underlying listing not verifiable on cited source URL. See L007-laundromat-powder-springs-snippet.md retraction notice.",
   "scored_at": "2026-05-15T00:00:00Z",
-  "subscores": {
-    "cash_flow_fit": 75,
-    "operator_fit": 70,
-    "geography_fit": 95,
-    "industry_fit": 80,
-    "deal_structure_fit": 55,
-    "diligence_risk": 25
-  },
   "hard_gates": {
     "target_owner_profit": "unknown",
     "financing_feasibility": "unknown",
-    "license_transferability": "pass"
+    "license_transferability": "unknown"
   },
-  "diligence_packet_id": "L007-dd",
-  "top_risks": [
-    "All data is from search snippet — nothing verified by direct fetch",
-    "Manager in place and owner hours unknown",
-    "Revenue unknown — CF of $140k on unknown revenue base could mean thin margins",
-    "Lease terms and equipment age completely unknown",
-    "BizBuySell listing may already be under contract"
-  ],
-  "top_opportunities": [
-    "Powder Springs (Cobb County) is exactly within buyer's commute range from Atlanta",
-    "$360k asking at $140k CF = 2.57x SDE multiple — market-standard or slightly below for a laundromat",
-    "Laundromat model is inherently semi-absentee if POS/coin-op is automated",
-    "SBA 7(a) eligible — below $500k threshold"
-  ]
+  "status": "retracted",
+  "retraction_reason": "verification_failed_via_playwright"
 }
 ```
 
-## Note
+## Audit trail
 
-This listing is scored at 71/100 based on snippet data only. Confidence in the score is 0.20. If the snippet data is verified by human navigation of BizBuySell, this likely becomes the #1 or #2 ranked opportunity in the set. Flag: `needs_playwright: true`.
+- Original score: 71/100 (confidence 0.20), authored by `due-diligence-researcher` 2026-05-15
+- Retracted: orchestrator-playwright pass, 2026-05-15, after live-page verification at BizBuySell
+- Prior committed version: git commit `50dda6c`

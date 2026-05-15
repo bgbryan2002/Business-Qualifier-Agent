@@ -180,3 +180,71 @@ Reach `[GATE 3]`. Wait for human decision on:
 3. Re-scope discovery (rubric too tight/loose?)
 4. Adjust diligence depth before memo finalization
 
+
+## 2026-05-15 — Phase 3 — Playwright verification of L007 + L008
+
+**Trigger:** User requested orchestrator-driven playwright verification of L007 (Powder Springs laundromat) and L008 (Duluth laundromat) — both originally drafted from snippet data with confidence 0.20.
+
+**Method:** MCP playwright plugin loaded at orchestrator layer. Single page navigation per source URL. JS fully rendered. Full-body text search performed for the claimed city names.
+
+**Result: VERIFICATION FAILED for both listings.**
+
+### L007 — Powder Springs
+
+- Navigated: `https://www.bizbuysell.com/georgia/laundromats-and-coin-laundry-businesses-for-sale/`
+- Page state: 27 listings present ("Showing 27 results"), JS fully rendered, reCAPTCHA in page footer non-blocking
+- Search result: `Powder Springs` → **0 matches**
+- Closest Cobb-County listing on page: "Semi-Absentee Cobb County, GA" at $175k / $60k CF — does NOT match claimed $360k / $140k
+- L007 retracted: `status: rejected`, `confidence: 0.00`
+
+### L008 — Duluth
+
+- Navigated: `https://www.bizbuysell.com/georgia/atlanta-metro-area/laundromats-and-coin-laundry-businesses-for-sale/`
+- Page state: 20 listings present ("Showing 20 results"), JS fully rendered
+- Search result: `Duluth` → **0 matches**
+- Gwinnett-county-adjacent listings observed (Norcross, Stone Mountain, Lithonia) — none match claimed $450k / $240k
+- L008 retracted: `status: rejected`, `confidence: 0.00`
+
+### Hypothesis
+
+The `due-diligence-researcher` subagent appears to have ingested Google search-result snippets at face value without verifying against the live BizBuySell pages. The snippet text "Powder Springs, GA: $360,000 with $140,000 cash flow" and "Duluth, GA ($450,000 with $240,000 cash flow)" was either pulled from a stale search-engine cache, drawn from a different source that was misattributed to the BizBuySell category URL, or hallucinated from search-result fragments. Single WebFetch returned a JS shell on the actual pages, leaving the agent without contradicting evidence.
+
+### Live BizBuySell GA Atlanta-metro laundromat observations (informational — not packets)
+
+Cities with active listings on the verified pages: Acworth, Decatur, Cobb County (generic), Marietta, Roswell, Atlanta, Morrow, Norcross, Stone Mountain, Dunwoody, Smyrna, Barrow County, Forest Park, Lithonia, Fairburn. Closest-to-buyer-001-rubric (none clean):
+
+- **Roswell, GA** — $729,000 / $216,000 CF — CF in range, asking $200k over price ceiling. Note: explicitly "no seller financing, SBA only."
+- **Marietta & Sandy Springs Dry Cleaners** (dry cleaning, not laundromat) — $545,000 / $200,000 CF — at the price ceiling, CF in range. Worth considering as an adjacent-category fit.
+- **Cobb County Semi-Absentee** — $175,000 / $60,000 CF — price in range, CF well below floor. Worth a look only if the CF figure is conservative.
+
+No listing in the verified BizBuySell GA laundromat inventory matches the buyer-001 rubric cleanly today. Either the rubric is too tight for this category right now, or the BizBuySell pipeline for GA laundromats is thin this week.
+
+### Files updated in this pass
+
+- `obsidian-vault/03-Deals/listings/draft/L007-laundromat-powder-springs-snippet.md` — retraction notice
+- `obsidian-vault/03-Deals/listings/draft/L008-laundromat-duluth-snippet.md` — retraction notice
+- `obsidian-vault/03-Deals/scored/draft/L007-assessment.md` — score retracted
+- `obsidian-vault/03-Deals/scored/draft/L008-assessment.md` — score retracted
+- `obsidian-vault/03-Deals/memos/draft/L007-memo.md` — retracted
+- `obsidian-vault/03-Deals/memos/draft/L008-memo.md` — retracted
+- `inputs/listings.json` — L007/L008 status → `rejected_verification_failed`
+
+### Refreshed GATE 3 ranking
+
+| Rank | ID  | Source                | What it is              | Score | Status                                |
+|------|-----|------------------------|-------------------------|-------|---------------------------------------|
+| 1    | L004 | businessbroker.net    | Gasket Replacement, Savannah GA | 58 (conf 0.55) | **Only memo-eligible. NDA pending user decision.** |
+| 2    | L002 | sunbeltatlanta.com    | Franchise Cleaning, N Atlanta | 62 (conf 0.65) | High-fit-but-gated — owner-profit FAIL. Negotiation path. |
+| 3    | L003 | gabusinessbrokers.com | FedEx P&D Routes, Atlanta | 44 (conf 0.65) | High-fit-but-gated — financing FAIL. Future target. |
+| —    | L001 | laundromatforsale.com | Rossville laundromat    | 32    | Rejected — geography                  |
+| —    | L005 | businessbroker.net    | Savannah exhaust clean  | N/A   | Excluded — pricing anomaly            |
+| —    | L006 | laundromatforsale.com | Griffin laundromat      | 18    | Rejected — revenue floor              |
+| —    | L007 | bizbuysell.com        | Powder Springs lndy     | —     | **RETRACTED — verification failed**   |
+| —    | L008 | bizbuysell.com        | Duluth laundromat       | —     | **RETRACTED — verification failed**   |
+
+**Net result of this run:** 1 memo-eligible candidate (L004), 2 high-fit-but-gated candidates (L002, L003). No actionable BizBuySell leads in the verified set.
+
+### Lesson recorded
+
+The `due-diligence-researcher` agent's single-WebFetch-per-URL strategy is structurally vulnerable to BizBuySell-style JS shells: it cannot distinguish between "real listing whose page didn't render in WebFetch" and "snippet that was hallucinated by the search engine." For future Phase 3 runs, every BizBuySell or similar JS-heavy marketplace claim must be playwright-verified before a packet is treated as anything above confidence 0.20.
+
