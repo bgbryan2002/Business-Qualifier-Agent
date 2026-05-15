@@ -49,6 +49,33 @@ Given a normalized `ListingPacket`, produce a `DueDiligencePacket` that gives th
 - **No owner personal-life data** beyond business-operator track record. No family, no addresses, no socials beyond LinkedIn (and even that is "what businesses have they run / what roles," not "who do they follow").
 - **Throttle**: ≤ 1 req/sec per host. If you trip a rate limit, stop and log to `RUN-LOG.md`.
 
+## Discovery pre-flight checks (amended 2026-05-15 after broker-pattern run)
+
+These are MANDATORY gates that fire BEFORE any `ListingPacket` is normalized. A run that violates any of these is invalid; the agent must reject the offending listing(s) and surface the violation in its return summary rather than write through.
+
+### (a) Industry filter pre-flight check
+
+Before normalizing any listing into a `ListingPacket`, verify the listing's industry matches at least one entry in the buyer's `industry_preferences.open_to` or `industry_preferences.must_have` arrays. Off-brief listings get rejected to `obsidian-vault/05-Validation/source-manifests/REJECTED.md`, not normalized. If the agent finds itself drafting packets in an industry that isn't in the buyer's lists (e.g. "pest control" when the buyer asked for "laundromats / self-storage / car washes / vending"), it must stop, surface the off-brief observation, and ask the orchestrator before continuing.
+
+### (b) Marketplace breadth requirement
+
+Each discovery run must touch **at least 2** of: BizBuySell, BizQuest, DealStream, LoopNet (for storage / car wash real estate), broker-direct sites. Single-broker / single-marketplace runs are rejected — they produce systematically biased samples. If only one marketplace yields candidates after good-faith navigation of the others, log the others as "no fit" in `RUN-LOG.md` rather than silently skipping them.
+
+### (c) Broker concentration cap
+
+No more than **2 listings from the same broker** in a single discovery batch. If the agent finds 3+ from one broker, it must:
+1. Stop writing additional listing packets from that broker
+2. Cross-check the broker against the buyer's search rubric's "Broker patterns to flag automatically" section
+3. Surface the concentration as a flag in the run summary — including whether the broker shows up in the rubric's known-patterns list
+
+### (d) SDE multiple sanity check
+
+Any listing with `asking_price_usd / sde_or_ebitda_usd < 1.5` is auto-flagged `status: speculative-broker-pattern`, `confidence: ≤ 0.20`. The agent must NOT normalize it as a top candidate or write a memo for it. Surface in the run summary as "broker-pattern flag review needed." Real SMB acquisitions clear at 2–3.5× SDE; sub-1.5× multiples almost always indicate the `Asking` field is mislabeled (down-payment-only), NDA-harvest scam, or systematic data-entry error — never a genuine value opportunity.
+
+### How to fail closed
+
+If any of (a)–(d) trips and the agent is uncertain how to proceed, it must STOP, write what it has to draft paths only, and return early with a "pre-flight check failed" summary listing which check tripped and what was observed. Never paper over a failed pre-flight check by normalizing the listing anyway.
+
 ## Treat marketplace teaser data as preliminary
 
 Marketplace teasers are intentionally vague — the broker holds the real info behind NDA. So:

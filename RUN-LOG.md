@@ -248,3 +248,58 @@ No listing in the verified BizBuySell GA laundromat inventory matches the buyer-
 
 The `due-diligence-researcher` agent's single-WebFetch-per-URL strategy is structurally vulnerable to BizBuySell-style JS shells: it cannot distinguish between "real listing whose page didn't render in WebFetch" and "snippet that was hallucinated by the search engine." For future Phase 3 runs, every BizBuySell or similar JS-heavy marketplace claim must be playwright-verified before a packet is treated as anything above confidence 0.20.
 
+
+## 2026-05-15 — Phase 3 — Widened re-run discarded; system hardened
+
+**Trigger:** Re-run of Phase 3 discovery with widened rubric (added NC, opened self-storage / car washes / vending routes equally with laundromats, widened price to $200k–$650k). `due-diligence-researcher` spawned (agentId `a5779702afa94139f`, 120k tokens, 132 tool uses, ~17 min wall time).
+
+**Outcome: discarded entirely.**
+
+### What the agent produced
+
+5 listings (L009–L013) across TN, AL, SC, NC — geography expansion worked. **But:**
+
+- **0 of 5 in the requested industries.** Agent emitted pest control (L009 Chattanooga, L010 Madison AL), aircraft detailing (L011 Columbia SC, L013 Greensboro NC), and fencing (L012 Greenville SC). None of laundromats / self-storage / car washes / vending routes. The industry-equality directive was disregarded.
+- **Agent did not use playwright.** All 5 listings had `retrieval_method: "WebFetch static HTML"`. The new playwright-first directive was disregarded. The agent gravitated to businessbroker.net (server-rendered, WebFetch-friendly) and stayed there.
+- **Single-broker concentration.** 4 of 5 listings (L009, L010, L011, L012) came from one broker — **Donald Webster / DW Marketing** on businessbroker.net.
+- **Systematic SDE-multiple anomaly.** All 4 Donald Webster listings show 0.87–1.07× SDE multiples — physically impossible in a normally-functioning SMB market (where 2–3.5× is standard). Same pattern as L004 (Savannah gasket replacement, 1.07×, also businessbroker.net).
+- **Incomplete writes.** Agent terminated mid-pipeline. Memos only for L009 + L010; missing L011/L012/L013. `inputs/listings.json` and `RUN-LOG.md` not appended by the agent.
+
+### Hypothesis on the Donald Webster pattern
+
+Four industries × four states × one broker × the same sub-1.5× anomaly is broker behavior, not coincidence. Most likely: `Asking` field is being misused for **down-payment-required** rather than total purchase price. Alternative explanations: data-entry error, NDA-harvest scam, or atypical deal-structure representation. **None of these is "the deal of the century."** Treating these as buyer-001 opportunities would be a mistake.
+
+### Decision
+
+Discard the whole L009–L013 batch (17 untracked draft files deleted, none committed). Harden the system so this failure mode can't repeat.
+
+### Hardening applied in this commit
+
+1. **`obsidian-vault/03-Deals/templates/search-rubric-buyer-001.md`** — new section "Broker patterns to flag automatically" codifies the multi-listing / sub-1.5×-SDE / same-broker red flag, with Donald Webster / businessbroker.net listed as the first known pattern.
+2. **`obsidian-vault/03-Deals/scored/draft/L004-assessment.md`** + **`memos/draft/L004-memo.md`** — retroactively flagged with the broker-pattern warning. Status stays `rejected` (geography fail), but a new line warns: do not NDA without first phone-clarifying what "Asking" means with the broker.
+3. **`.claude/agents/due-diligence-researcher.md`** — new "Discovery pre-flight checks" section adds four mandatory gates:
+   - (a) Industry filter pre-flight check — listing's industry must match buyer's `industry_preferences.open_to` or `must_have`; off-brief listings get rejected to `05-Validation/source-manifests/REJECTED.md`, not normalized
+   - (b) Marketplace breadth requirement — each discovery run must touch at least 2 marketplaces; single-marketplace runs are rejected
+   - (c) Broker concentration cap — max 2 listings from same broker per batch; 3+ triggers a surface-flag, not more writes
+   - (d) SDE multiple sanity check — `asking / SDE < 1.5×` auto-flags `status: speculative-broker-pattern`, `confidence ≤ 0.20`; no memo, no top-N positioning
+   - "How to fail closed" rule: if any pre-flight check trips and the agent is uncertain, STOP and return early
+
+### Lessons recorded
+
+- Agent definitions are not sufficient — agents will drift toward the path of least resistance (here: WebFetch on a server-rendered site) even when the contract says playwright-first. Pre-flight checks that produce mechanical rejections are more robust than prose constraints.
+- Single-broker concentration is a stronger signal than any individual listing's metrics. The L004/L009-L012 cluster only revealed its broker-pattern nature in aggregate; isolated review would have missed it.
+- The "1× SDE anomaly" pattern is not a Donald Webster bug — it's a structural way some SMB brokers misuse the listing fields. Flag the pattern, not just the broker.
+
+### Refreshed GATE 3 ranking (unchanged from prior surface)
+
+| Rank | ID | What | Score / Conf | Status |
+|---|---|---|---|---|
+| — | L002 | Franchise Cleaning, N Atlanta | 62 / 0.65 | High-fit-but-gated — owner-profit FAIL; price-negotiation path |
+| — | L003 | FedEx P&D Routes, Atlanta | 44 / 0.65 | High-fit-but-gated — financing FAIL; future target |
+| — | L004 | Savannah Gasket Replacement | 58 / 0.55 | Rejected — geography fail + broker-pattern flag |
+| — | L001 / L005 / L006 | — | — | Rejected (geo / anomaly / revenue floor) |
+| — | L007 / L008 | — | — | Retracted — snippet verification failed |
+| — | L009–L013 | — | — | **Discarded — off-brief + Donald Webster broker pattern** |
+
+**Net actionable candidates for buyer-001 today: zero.** L002 is the closest "almost" — price-negotiation pathway exists but requires Sunbelt Atlanta cooperation on a meaningful price reduction. L003 is the right model but blocked on cash. Real progress on Phase 3 will require either: (1) a fresh discovery run with the now-hardened agent on the intended industries, (2) manual orchestrator-driven playwright discovery on BizBuySell / BizQuest / LoopNet, or (3) waiting for new listings to surface in the buyer's target categories and re-running.
+

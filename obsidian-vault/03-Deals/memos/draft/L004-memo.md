@@ -21,6 +21,8 @@ tags: [memo, phase-3, L004, rejected-geography-fail, price-anomaly-investigation
 # Acquisition Memo — L004
 ## Commercial Kitchen Gasket Replacement Service, Savannah GA
 
+> **BROKER-PATTERN FLAG (2026-05-15):** This listing matches the Donald Webster / businessbroker.net 1.0× SDE pattern (see `search-rubric-buyer-001.md` § "Broker patterns to flag automatically"). The original rejection reason (geography) stands, but the deal's economic claims are also suspect. Even if the buyer reconsiders geography, do NOT NDA without first calling the broker to clarify what the "Asking" figure represents.
+
 ### Opening
 
 A Savannah-based B2B route service business — commercial refrigeration gasket replacement for restaurants and foodservice clients — offered at $314,900 with $294,861 in stated annual cash flow. The 1.07x SDE multiple is the most anomalous pricing in the discovery set. This business either has a hidden reason for the low price (health of owner, lease expiration, client concentration) or represents an extraordinary deal. Clarifying which requires a single conversation with the seller.

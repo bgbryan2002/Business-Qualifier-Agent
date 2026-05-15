@@ -19,6 +19,8 @@ tags: [assessment, phase-3, L004, rejected-geography-fail]
 
 # Deal Assessment — L004 (Gasket Replacement, Savannah GA)
 
+> **BROKER-PATTERN FLAG (2026-05-15):** This listing matches the Donald Webster / businessbroker.net 1.0× SDE pattern (see `search-rubric-buyer-001.md` § "Broker patterns to flag automatically"). The original rejection reason (geography) stands, but the deal's economic claims are also suspect. Even if the buyer reconsiders geography, do NOT NDA without first calling the broker to clarify what the "Asking" figure represents.
+
 ```json
 {
   "listing_id": "L004",

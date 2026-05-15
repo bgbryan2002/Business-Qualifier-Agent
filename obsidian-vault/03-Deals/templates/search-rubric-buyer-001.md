@@ -62,6 +62,15 @@ If 4 or fewer → keep scrolling.
 
 ---
 
+## Broker patterns to flag automatically
+
+Any single broker with ≥ 2 active listings showing < 1.5× SDE multiples across different industries/cities is a structural red flag. Possible causes: 'Asking' field is down-payment-only (mislabeled), NDA-harvest scam, or systematic data-entry error. Treat all listings from such broker as confidence ≤ 0.20 and status: speculative until: (a) direct broker phone call confirms what 'Asking' represents, AND (b) at least one listing from this broker has been independently verified via state Secretary of State filing.
+
+**Known patterns as of 2026-05-15:**
+- **Donald Webster / DW Marketing on businessbroker.net** — 4+ listings at 0.87–1.07× SDE across pest control, aircraft detailing, fencing, gasket replacement, across GA / TN / AL / SC. See `RUN-LOG.md` 2026-05-15 Phase 3 widened re-run entry for the discovery trail.
+
+---
+
 ## Industries to filter INTO (use marketplace category filters)
 
 Map directly to BizBuySell / BizQuest category checkboxes:
