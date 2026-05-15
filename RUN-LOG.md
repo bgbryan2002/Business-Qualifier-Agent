@@ -124,3 +124,59 @@ User chose to resume locally before Phase 3. Rationale: Phase 3+ depends increas
 The original brief's block existed for legal/ToS reasons (BizBuySell etc. forbid automated scraping) and data-quality reasons (teasers are intentionally vague). Single-shot URL fetches + robots.txt respect + no bulk crawling + treating teaser data as preliminary keep the legal posture defensible while delivering real listings. Marketplace data redistribution remains forbidden.
 
 ---
+
+## 2026-05-15 — Phase 3 — Listing Discovery + Initial Diligence (partial run)
+
+**Agent invocation**
+- `due-diligence-researcher` spawned with full Phase 3 scope (discovery → diligence → score → memos) and the public-web policy guardrails
+- Buyer: buyer-001. Rubric: `obsidian-vault/03-Deals/templates/search-rubric-buyer-001.md`
+- Tool gap acknowledged at orchestration time: subagent has WebFetch/WebSearch but no playwright. JS-heavy sources expected to be flagged `needs_playwright` rather than fabricated.
+- Run stats: 144k tokens, 127 tool uses, ~19 min wall time
+
+**Outcome — 8 listings discovered, 3 memos drafted**
+
+| ID  | Source                          | Industry              | City              | Score | Conf. | Status                                    |
+|-----|----------------------------------|-----------------------|-------------------|-------|-------|-------------------------------------------|
+| L001 | laundromatforsale.com           | Laundromat + P&D      | Rossville GA      | 32    | 0.45  | rejected — geography (2hr from Atlanta)   |
+| L002 | sunbeltatlanta.com              | Franchise Cleaning    | N Metro Atlanta   | 62    | 0.65  | high-fit-but-gated — owner-profit FAIL    |
+| L003 | gabusinessbrokers.com           | FedEx P&D Routes      | Atlanta           | 44    | 0.65  | high-fit-but-gated — financing FAIL       |
+| L004 | businessbroker.net              | Gasket Replacement    | Savannah GA       | 58    | 0.55  | **MEMO — request NDA**                    |
+| L005 | businessbroker.net              | Exhaust Cleaning      | Savannah GA       | N/A   | 0.20  | excluded — pricing anomaly ($28.9k/$401k) |
+| L006 | laundromatforsale.com           | Laundromat            | Griffin GA        | 18    | 0.40  | rejected — revenue floor                  |
+| L007 | bizbuysell.com (snippet only)   | Laundromat            | Powder Springs GA | 71*   | 0.20  | **MEMO — needs playwright verification**  |
+| L008 | bizbuysell.com (snippet only)   | Laundromat            | Duluth GA         | 68*   | 0.20  | **MEMO — needs playwright verification**  |
+
+\* L007 and L008 scores are speculative — based on search-result snippets, not direct listing fetches. BizBuySell listing pages are JS-rendered and returned shells on single WebFetch.
+
+**Honest assessment**
+- Real, usable diligence data: 1 listing (L004) with confidence ≥0.55
+- Two "high-fit-but-gated" candidates with real data: L002 (price-negotiation pathway), L003 (future-target when buyer accumulates capital)
+- Two top-scoring memos (L007, L008) are speculative — they require playwright follow-up before being actionable
+- No fabricated fields. Snippet-based listings explicitly flagged.
+
+**Playwright follow-up queue (Phase 3.D)**
+- L007 BizBuySell Powder Springs laundromat — full listing fetch
+- L008 BizBuySell Duluth laundromat — full listing fetch
+- Any BizBuySell candidate the subagent flagged but couldn't reach the listing page on
+- Optional: state SoS portals (GA SoS Corporations Division for L004 entity verification), Cobb/Gwinnett County court records
+
+**Robots / ToS skips**
+- None logged by the subagent. BizBuySell listings returned JS shells (not a robots block — just JS-rendered SPAs)
+
+**Agent termination note**
+The subagent paused mid-pipeline asking how to handle the "only 3 listings cleared hard gates → can I still produce 5 memos?" question. It then wrote 3 memos (L004, L007, L008) for the fully-eligible set and terminated. SendMessage to resume the agent is not available in this orchestrator's toolset, so it was treated as terminated. Orchestrator backfilled `inputs/listings.json` and this RUN-LOG block.
+
+**Deliverables on disk (all in `draft/` subdirs)**
+- 8 ListingPackets in `obsidian-vault/03-Deals/listings/`
+- 8 DueDiligencePackets in `obsidian-vault/03-Deals/due-diligence/draft/`
+- 8 DealAssessments in `obsidian-vault/03-Deals/scored/draft/`
+- 3 Memos in `obsidian-vault/03-Deals/memos/draft/` (L004, L007, L008)
+- `inputs/listings.json` populated with all 8
+
+**Next action**
+Reach `[GATE 3]`. Wait for human decision on:
+1. Commit drafts as-is for review (recommended)
+2. Run playwright follow-up on L007/L008 before commit
+3. Re-scope discovery (rubric too tight/loose?)
+4. Adjust diligence depth before memo finalization
+
