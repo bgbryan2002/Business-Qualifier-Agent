@@ -4,9 +4,9 @@
 
 ---
 
-## TL;DR — what to do, in order
+## TL;DR — what to do, in order (Windows PowerShell)
 
-```bash
+```powershell
 # 1. Clone (replace path with wherever you keep code)
 git clone https://github.com/bgbryan2002/Business-Qualifier-Agent.git
 cd Business-Qualifier-Agent
@@ -16,21 +16,23 @@ cd Business-Qualifier-Agent
 #    Verify:
 claude --version
 
-# 3. Add the cc alias (one-time, in ~/.zshrc or ~/.bashrc)
-echo "alias cc='claude --dangerously-skip-permissions'" >> ~/.zshrc
-source ~/.zshrc
+# 3. Add the cc function (one-time, in $PROFILE)
+Add-Content -Path $PROFILE -Value 'function cc { claude --dangerously-skip-permissions @args }'
+. $PROFILE
 
 # 4. Launch in this repo
 cc
 ```
 
-That's it. Claude Code reads `CLAUDE.md` from the current working directory automatically — no flags, no config, no "open project" step. The vault, subagents, hooks, and operating rules all cascade from there.
+That's it. Claude Code reads `CLAUDE.md` from the current working directory automatically — no flags, no config, no "open project" step. The vault, subagents, hooks (PowerShell .ps1), and operating rules all cascade from there.
 
 Then in the Claude Code session, just say:
 
 > *"Resume Phase 3. Use the buyer-001 search rubric to find real qualified listings on the public web, then run the full DD + scoring + memo pipeline. No fabricated listings."*
 
 The orchestrator subagent picks it up. **No fabricated listings this round** — see the "Phase 3 sourcing policy (amended)" section below.
+
+> **Note on shell choice:** Hooks were rewritten as PowerShell (`.ps1`) for native Windows compatibility. Bash versions (`.sh`) are kept in `.claude/scripts/` alongside for any future Linux/Mac/WSL contributor; `.claude/settings.json` invokes the `.ps1` versions on Windows. If you ever switch to WSL/Linux/Mac, swap `settings.json` to call the `.sh` files (one-line change per hook).
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings",
-  "_comment_": "Hooks for the SMB Acquisition Intelligence Platform. See obsidian-vault/00-Claude-Control/OPERATING-RULES.md for the contract.",
+  "_comment_": "Hooks for the SMB Acquisition Intelligence Platform. See obsidian-vault/00-Claude-Control/OPERATING-RULES.md for the contract. PowerShell scripts are invoked on Windows; bash equivalents in .sh kept alongside for WSL/Linux/Mac contributors.",
   "hooks": {
     "SessionStart": [
       {
@@ -8,7 +8,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ./.claude/scripts/session-start.sh"
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./.claude/scripts/session-start.ps1"
           }
         ]
       }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ./.claude/scripts/pre-write-guard.sh"
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./.claude/scripts/pre-write-guard.ps1"
           }
         ]
       }
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ./.claude/scripts/post-write-validate.sh"
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./.claude/scripts/post-write-validate.ps1"
           }
         ]
       }
@@ -41,14 +41,14 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ./.claude/scripts/subagent-stop-sync.sh"
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./.claude/scripts/subagent-stop-sync.ps1"
           }
         ]
       }
     ]
   },
   "permissions": {
-    "_comment_": "Local-session defaults. The online sandbox runs without --dangerously-skip-permissions; the human's local cc alias enables it.",
+    "_comment_": "Local-session defaults. The online sandbox runs without --dangerously-skip-permissions; the human's local cc PowerShell function enables it.",
     "allow": [
       "Bash(git status:*)",
       "Bash(git log:*)",
@@ -56,6 +56,7 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push upstream:*)",
+      "Bash(git push origin:*)",
       "Bash(git rev-parse:*)",
       "Bash(npm run dev:*)",
       "Bash(npm run build:*)",
