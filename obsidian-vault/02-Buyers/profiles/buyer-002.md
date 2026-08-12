@@ -1,7 +1,7 @@
 # Buyer-002 Profile
 
 **Created:** 2026-08-11 21:38 UTC  
-**Updated:** 2026-08-12 12:55 UTC  
+**Updated:** 2026-08-12 13:03 UTC  
 **Status:** COMPLETE — Ready for Phase 3 Discovery  
 
 ---
@@ -12,6 +12,7 @@
 - **Education/Expertise:** Computer Science, Cybersecurity
 - **Current Work:** Corporate role + tech-focused side consulting
 - **Operational Preference:** Hands-off business model with General Manager to handle day-to-day operations
+- **Subcontracting:** Comfortable with subcontracting model
 
 ---
 
@@ -26,8 +27,14 @@
 - **Minimum Annual Profit:** $75,000
 
 ### Industries
-- **Focus:** Trades and service-based businesses
-- **Examples:** HVAC, plumbing, electrical, landscaping, cleaning services, handyman, auto repair, etc.
+- **Primary Focus:** Contract-based services
+  - Fleet detailing
+  - Aircraft detailing
+  - Similar contract service models
+- **Secondary:** Trades and service-based businesses
+  - HVAC, plumbing, electrical
+  - Landscaping, cleaning services
+  - Handyman, auto repair
 
 ### Geography
 - **Primary:** DMV (Washington DC, Maryland, Virginia)
@@ -43,10 +50,12 @@
 | Max Price | $500,000 |
 | Min Price | $300,000 |
 | Min Annual Profit | $75,000 |
-| Industries | Trades, Services |
-| Geography | DMV + SE/TX/FL |
+| Industries | Contract services, Trades, Services |
+| Industry Priority | Fleet/aircraft detailing |
+| Geography | DMV + NC, Atlanta, TX, FL |
 | Financing | SBA (preferred) |
 | Operational Model | Hands-off w/ GM |
+| Subcontracting | Comfortable |
 | Risk Profile | Moderate |
 
 ---
